@@ -1290,24 +1290,45 @@
 
       if (navigator.onLine !== false && state.sheetsUrl) {
         const ok = await pushSingleReport(report);
-        showToast(ok ? `${items.length} item tersimpan & terkirim ke Sheets!` : `${items.length} item tersimpan offline (masuk antrean sync).`);
+        showToast(ok
+          ? `${items.length} item tersimpan & terkirim ke Sheets!`
+          : `Tersimpan lokal (gagal kirim ke Sheets: ${lastSyncError || 'cek izin Apps Script'}).`);
       } else {
         showToast(`${items.length} item tersimpan offline & otomatis dikunci!`);
       }
     }
 
+    let lastSyncError = '';
+
     async function pushSingleReport(report) {
       if (!state.sheetsUrl) return false;
       try {
         const res = await fetch(state.sheetsUrl, {
-          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(report)
+          method: 'POST',
+          redirect: 'follow',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(report)
         });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
+        const text = await res.text();
+        let data = null;
+        try { data = JSON.parse(text); } catch (parseErr) {}
+        if (!res.ok || !data || data.ok !== true) {
+          lastSyncError = (data && data.error) ? data.error : ('HTTP ' + res.status + ' (respons bukan JSON ok:true)');
+          report.synced = false;
+          dbSet('reports', state.reports);
+          renderAll();
+          return false;
+        }
+        lastSyncError = '';
         report.synced = true;
         dbSet('reports', state.reports);
         renderAll();
         return true;
-      } catch (e) { return false; }
+      } catch (e) {
+        lastSyncError = e && e.message ? e.message : 'Koneksi gagal';
+        report.synced = false;
+        return false;
+      }
     }
 
     let isSyncingNow = false;
@@ -1325,7 +1346,9 @@
       if (!silent) showToast(`Mengirim ${unsynced.length} laporan antrean...`);
       let okCnt = 0;
       for (const r of unsynced) { if (await pushSingleReport(r)) okCnt++; }
-      if (!silent) showToast(`${okCnt}/${unsynced.length} laporan berhasil dikirim ke Sheets.`);
+      if (!silent) showToast(okCnt === unsynced.length
+        ? `${okCnt}/${unsynced.length} laporan berhasil dikirim ke Sheets!`
+        : `Terkirim ${okCnt}/${unsynced.length}. Error: ${lastSyncError || 'cek Apps Script'}`);
     }
 
     async function pullFromSheets(silent) {
@@ -1340,11 +1363,15 @@
         const res = await fetch(state.sheetsUrl + sep + '_t=' + Date.now());
         const data = await res.json();
         if (data && data.ok && Array.isArray(data.reports)) {
-          const localOnly = state.reports.filter(r => !r.synced && !data.reports.some(x => x.id === r.id));
-          state.reports = [...localOnly, ...data.reports];
+          const remoteIds = new Set(data.reports.map(x => x.id));
+          // Keep ALL local reports that are not yet on remote (and mark them unsynced if missing remotely so they retry!)
+          const localMissing = state.reports
+            .filter(r => !remoteIds.has(r.id))
+            .map(r => ({ ...r, synced: false }));
+          state.reports = [...localMissing, ...data.reports];
           dbSet('reports', state.reports);
           renderAll();
-          if (!silent) showToast(`Tersinkron: ${data.reports.length} batch laporan dari server.`);
+          if (!silent) showToast(`Tersinkron: ${data.reports.length} dari Sheets` + (localMissing.length ? ` (+${localMissing.length} lokal)` : ''));
         }
       } catch (e) {
         if (!silent) showToast('Gagal menarik data. Cek koneksi internet.');

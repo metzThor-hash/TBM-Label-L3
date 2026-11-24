@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tbm-f35e-pwa-v2';
+const CACHE_NAME = 'tbm-f35e-pwa-v3';
 const ASSETS = [
   './',
   './index.html',
