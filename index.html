@@ -60,6 +60,12 @@
         <select id="week-select" aria-label="Pilih Minggu"
           class="text-xs font-bold bg-white/10 border border-white/15 rounded-xl px-2.5 py-1.5 text-white focus:outline-none cursor-pointer [&>option]:text-slate-900">
         </select>
+        <button id="btn-refresh-live" type="button"
+          class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 border border-white/15 text-white text-xs font-bold transition-colors"
+          title="Tarik update terbaru dari semua HP">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+          <span class="hidden sm:inline">Sync</span>
+        </button>
         <button id="btn-export-xlsx-top" type="button"
           class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-colors shadow-xs"
           title="Export Form Excel (.xlsx)">
@@ -376,7 +382,7 @@
           <h3 class="text-sm font-extrabold text-slate-900">Pengaturan QR Mesin</h3>
           <div>
             <label for="qr-base-url" class="block text-xs font-semibold text-slate-700 mb-1">URL Aplikasi PWA (GitHub Pages / Sites)</label>
-            <input id="qr-base-url" type="url" value="https://sites.google.com/view/mtc-plan-label-l3/full-page-embed"
+            <input id="qr-base-url" type="url" value="https://metzthor-hash.github.io/TBM-Label-L3/"
               class="w-full text-xs px-3 py-2 rounded-xl border border-slate-300 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200">
@@ -556,7 +562,7 @@
       focusIndex: 0,
       draftsByWeek: {},
       reports: [],
-      sheetsUrl: '',
+      sheetsUrl: 'https://script.google.com/macros/s/AKfycbx1daLxqYTizSre4JwszMPZsFsge9yuK_byUmc3j42afUXY9F5kQ4EpqgXvNKeDrQGf/exec',
       pendingUnlockSop: null,
       evalChart: null
     };
@@ -1304,30 +1310,52 @@
       } catch (e) { return false; }
     }
 
-    async function pushAllQueue() {
-      if (!state.sheetsUrl) { showToast('Isi URL Web App Google Sheets terlebih dahulu.'); return; }
+    let isSyncingNow = false;
+
+    async function pushAllQueue(silent) {
+      if (!state.sheetsUrl || navigator.onLine === false) {
+        if (!silent) showToast('Sedang offline atau URL Sheets kosong.');
+        return;
+      }
       const unsynced = state.reports.filter(r => !r.synced);
-      if (!unsynced.length) { showToast('Semua laporan sudah tersinkron!'); return; }
-      showToast(`Mengirim ${unsynced.length} laporan antrean...`);
+      if (!unsynced.length) {
+        if (!silent) showToast('Semua laporan sudah tersinkron!');
+        return;
+      }
+      if (!silent) showToast(`Mengirim ${unsynced.length} laporan antrean...`);
       let okCnt = 0;
       for (const r of unsynced) { if (await pushSingleReport(r)) okCnt++; }
-      showToast(`${okCnt}/${unsynced.length} laporan berhasil dikirim ke Sheets.`);
+      if (!silent) showToast(`${okCnt}/${unsynced.length} laporan berhasil dikirim ke Sheets.`);
     }
 
-    async function pullFromSheets() {
-      if (!state.sheetsUrl) { showToast('Isi URL Web App Google Sheets terlebih dahulu.'); return; }
-      showToast('Menarik data dari Google Sheets...');
+    async function pullFromSheets(silent) {
+      if (!state.sheetsUrl || navigator.onLine === false || isSyncingNow) {
+        if (!silent && navigator.onLine === false) showToast('HP sedang offline.');
+        return;
+      }
+      isSyncingNow = true;
+      if (!silent) showToast('Menarik update terbaru antar HP...');
       try {
-        const res = await fetch(state.sheetsUrl);
+        const sep = state.sheetsUrl.includes('?') ? '&' : '?';
+        const res = await fetch(state.sheetsUrl + sep + '_t=' + Date.now());
         const data = await res.json();
         if (data && data.ok && Array.isArray(data.reports)) {
           const localOnly = state.reports.filter(r => !r.synced && !data.reports.some(x => x.id === r.id));
           state.reports = [...localOnly, ...data.reports];
           dbSet('reports', state.reports);
           renderAll();
-          showToast(`Sinkron berhasil: ${data.reports.length} laporan dari Sheets.`);
+          if (!silent) showToast(`Tersinkron: ${data.reports.length} batch laporan dari server.`);
         }
-      } catch (e) { showToast('Gagal menarik data. Pastikan HP online & URL benar.'); }
+      } catch (e) {
+        if (!silent) showToast('Gagal menarik data. Cek koneksi internet.');
+      } finally {
+        isSyncingNow = false;
+      }
+    }
+
+    async function syncBidirectional(silent) {
+      await pushAllQueue(true);
+      await pullFromSheets(silent);
     }
 
     function openUnlockModal(sop) {
@@ -1368,7 +1396,7 @@
 
     // ==================== QR RENDER ====================
     function renderQrTab() {
-      const url = document.getElementById('qr-base-url').value.trim() || 'https://sites.google.com/view/mtc-plan-label-l3/full-page-embed';
+      const url = document.getElementById('qr-base-url').value.trim() || 'https://metzthor-hash.github.io/TBM-Label-L3/';
       document.getElementById('qr-full-url').textContent = url;
       const box = document.getElementById('qr-code-box');
       if (typeof qrcode !== 'undefined') {
@@ -1402,6 +1430,17 @@
         }
       });
       renderAll();
+
+      // Auto-sync immediately on open and every 30 seconds while online
+      if (navigator.onLine !== false && state.sheetsUrl) {
+        syncBidirectional(true);
+      }
+      if (window._tbmSyncInterval) clearInterval(window._tbmSyncInterval);
+      window._tbmSyncInterval = setInterval(() => {
+        if (document.visibilityState === 'visible' && navigator.onLine !== false && state.sheetsUrl) {
+          syncBidirectional(true);
+        }
+      }, 30000);
     }
 
     function renderAll() {
@@ -1441,7 +1480,8 @@
       }
       state.draftsByWeek = await dbGet('drafts', {});
       state.reports = await dbGet('reports', []);
-      state.sheetsUrl = await dbGet('sheetsUrl', '');
+      const savedUrl = await dbGet('sheetsUrl', '');
+      state.sheetsUrl = savedUrl || 'https://script.google.com/macros/s/AKfycbx1daLxqYTizSre4JwszMPZsFsge9yuK_byUmc3j42afUXY9F5kQ4EpqgXvNKeDrQGf/exec';
 
       weekSel.value = state.weekIndex;
       document.getElementById('operator-name').value = state.operatorName;
@@ -1450,8 +1490,13 @@
       document.getElementById('sheets-webapp-url').value = state.sheetsUrl;
 
       // Listeners
-      window.addEventListener('online', updateNetworkUI);
+      window.addEventListener('online', () => { updateNetworkUI(); syncBidirectional(true); });
       window.addEventListener('offline', updateNetworkUI);
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible' && navigator.onLine !== false) {
+          syncBidirectional(true);
+        }
+      });
 
       document.querySelectorAll('.bottom-tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
       weekSel.addEventListener('change', (e) => { state.weekIndex = Number(e.target.value); saveProfile(); renderAll(); });
@@ -1626,8 +1671,9 @@
         dbSet('sheetsUrl', state.sheetsUrl);
         showToast(state.sheetsUrl ? 'URL Sheets disimpan!' : 'URL Sheets dikosongkan.');
       });
-      document.getElementById('btn-push-queue').addEventListener('click', pushAllQueue);
-      document.getElementById('btn-pull-sheets').addEventListener('click', pullFromSheets);
+      document.getElementById('btn-refresh-live').addEventListener('click', () => syncBidirectional(false));
+      document.getElementById('btn-push-queue').addEventListener('click', () => pushAllQueue(false));
+      document.getElementById('btn-pull-sheets').addEventListener('click', () => pullFromSheets(false));
       document.getElementById('qr-base-url').addEventListener('input', renderQrTab);
       document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
       document.getElementById('btn-copy-qr-url').addEventListener('click', () => {
