@@ -1,17 +1,17 @@
 {
-  "name": "TBM Tracker \u2014 Sidel RollQuattro F35E (24T)",
-  "short_name": "TBM F35E",
-  "description": "Aplikasi Offline Autonomous Maintenance & Export Form Excel untuk Sidel RollQuattro F35E (24T)",
+  "name": "MAYORA TBM \u2014 Sidel RollQuattro F35E (24T)",
+  "short_name": "Mayora TBM",
+  "description": "Aplikasi Offline Autonomous Maintenance & Export Form Excel \u2014 Sidel RollQuattro F35E (24T)",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0f172a",
-  "theme_color": "#0f172a",
+  "background_color": "#EFEEE8",
+  "theme_color": "#000000",
   "orientation": "portrait",
   "icons": [
     {
-      "src": "icon.svg",
-      "sizes": "any",
-      "type": "image/svg+xml",
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
       "purpose": "any maskable"
     }
   ]

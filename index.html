@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <meta name="theme-color" content="#0f172a" />
+  <meta name="theme-color" content="#000000" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>TBM App — Sidel RollQuattro F35E (24T)</title>
+  <title>MAYORA TBM — Sidel RollQuattro F35E (24T)</title>
+  
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <link rel="apple-touch-icon" href="icon.png" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -22,9 +24,85 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     .safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
     @keyframes pulseRing {
-      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55); }
-      70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+      0% { box-shadow: 0 0 0 0 rgba(239, 6, 6, 0.50); }
+      70% { box-shadow: 0 0 0 10px rgba(239, 6, 6, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 6, 6, 0); }
+    }
+    :root {
+      --m-black: #000000;
+      --m-red: #EF0606;
+      --m-swirl: #D3CCC7;
+      --m-offwhite: #EFEEE8;
+    }
+    .mayora-hero-gradient {
+      background: linear-gradient(135deg, #EF0606 0%, #B80404 48%, #260406 100%);
+    }
+    .glass-tile {
+      background: rgba(255, 255, 255, 0.14);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(255, 255, 255, 0.24);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.32), 0 4px 14px rgba(0, 0, 0, 0.14);
+    }
+    .glass-surface {
+      background: rgba(255, 255, 255, 0.78);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .mayora-mesh-bg {
+      background-color: #EFEEE8;
+      background-image:
+        radial-gradient(at 10% 15%, rgba(239, 6, 6, 0.08) 0px, transparent 48%),
+        radial-gradient(at 90% 25%, rgba(99, 102, 241, 0.08) 0px, transparent 46%),
+        radial-gradient(at 20% 75%, rgba(217, 119, 6, 0.08) 0px, transparent 50%),
+        radial-gradient(at 85% 85%, rgba(16, 185, 129, 0.07) 0px, transparent 48%);
+      background-attachment: fixed;
+    }
+    .glass-card {
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.85), 0 8px 22px -10px rgba(0, 0, 0, 0.10);
+      transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+    }
+    .glass-card-daily {
+      background: linear-gradient(135deg, rgba(240, 249, 255, 0.82) 0%, rgba(255, 255, 255, 0.68) 100%);
+      border-color: rgba(125, 211, 252, 0.55);
+      border-left-color: #0284c7;
+    }
+    .glass-card-weekly {
+      background: linear-gradient(135deg, rgba(238, 242, 255, 0.80) 0%, rgba(255, 255, 255, 0.68) 100%);
+      border-color: rgba(165, 180, 252, 0.50);
+      border-left-color: #4f46e5;
+    }
+    .glass-card-fortnightly {
+      background: linear-gradient(135deg, rgba(245, 243, 255, 0.82) 0%, rgba(255, 255, 255, 0.68) 100%);
+      border-color: rgba(196, 181, 253, 0.55);
+      border-left-color: #7c3aed;
+    }
+    .glass-card-monthly {
+      background: linear-gradient(135deg, rgba(255, 251, 235, 0.84) 0%, rgba(255, 255, 255, 0.70) 100%);
+      border-color: rgba(252, 211, 77, 0.55);
+      border-left-color: #d97706;
+    }
+    .glass-card-quarterly {
+      background: linear-gradient(135deg, rgba(255, 241, 242, 0.84) 0%, rgba(255, 255, 255, 0.70) 100%);
+      border-color: rgba(253, 164, 175, 0.55);
+      border-left-color: #EF0606;
+    }
+    .glass-card-done-ok {
+      background: linear-gradient(135deg, rgba(236, 253, 245, 0.86) 0%, rgba(255, 255, 255, 0.72) 100%);
+      border-color: rgba(110, 231, 183, 0.60);
+      border-left-color: #059669;
+    }
+    .glass-card-done-abn {
+      background: linear-gradient(135deg, rgba(255, 228, 230, 0.86) 0%, rgba(255, 255, 255, 0.72) 100%);
+      border-color: rgba(251, 113, 133, 0.60);
+      border-left-color: #EF0606;
+    }
+    .glass-card-draft {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.90) 0%, rgba(239, 238, 232, 0.78) 100%);
+      border-color: rgba(0, 0, 0, 0.22);
+      border-left-color: #000000;
     }
     .jump-highlight { animation: pulseRing 1.1s ease-out 2; }
     @media print {
@@ -38,17 +116,17 @@
     }
   </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+<body class="mayora-mesh-bg text-[#000000] min-h-screen flex flex-col">
 
-  <!-- Native-style App Top Bar -->
-  <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md">
+  <!-- Native-style App Top Bar (Mayora Theme) -->
+  <header class="sticky top-0 z-30 bg-[#000000]/90 backdrop-blur-xl text-white border-b border-white/10 shadow-md">
     <div class="max-w-3xl mx-auto px-3.5 h-14 flex items-center justify-between gap-2">
       <div class="flex items-center gap-2.5 min-w-0">
-        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-extrabold text-xs shadow-inner shrink-0">
-          F35E
+        <div class="w-9 h-9 rounded-xl bg-white p-0.5 flex items-center justify-center shadow-sm shrink-0 overflow-hidden">
+          <img src="data:image/jpeg;base64,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" alt="Mayora Logo" class="w-full h-full object-contain rounded-lg" />
         </div>
         <div class="min-w-0">
-          <div class="text-sm font-extrabold truncate leading-tight tracking-tight">TBM Sidel F35E</div>
+          <div class="text-sm font-extrabold truncate leading-tight tracking-tight">MAYORA <span class="text-[#EF0606]">•</span> TBM F35E</div>
           <div class="flex items-center gap-1.5 text-[11px] text-slate-300 leading-tight">
             <span id="net-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
             <span id="net-status-text" class="truncate">Siap Offline • IndexedDB</span>
@@ -82,68 +160,81 @@
     <!-- ==================== TAB 1: DAFTAR TUGAS (LIST) ==================== -->
     <section id="view-tasks" class="space-y-3">
 
-      <!-- Compact Hero Progress Dashboard -->
-      <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-4 shadow-md space-y-3.5">
-        <div class="flex items-center justify-between gap-2">
+      <!-- Compact Hero Progress Dashboard (Mayora Aesthetic Red Gradient + Glassmorphism) -->
+      <div class="rounded-3xl mayora-hero-gradient text-white p-4 sm:p-5 shadow-lg border border-white/20 space-y-4 relative overflow-hidden">
+        <!-- Ambient Light Orbs for Smooth Glass Refraction -->
+        <div class="pointer-events-none absolute -top-12 -right-10 w-44 h-44 rounded-full bg-white/20 blur-2xl"></div>
+        <div class="pointer-events-none absolute -bottom-14 -left-8 w-40 h-40 rounded-full bg-[#EF0606]/45 blur-2xl"></div>
+
+        <div class="relative z-10 flex items-center justify-between gap-2">
           <div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-sky-300">Autonomous Maintenance • 24T</div>
-            <h1 class="text-base sm:text-lg font-extrabold leading-snug">SIDEL ROLLQUATTRO F35E</h1>
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/15 backdrop-blur-md border border-white/25 text-[10px] font-bold uppercase tracking-widest text-[#EFEEE8]">
+              <span class="w-1.5 h-1.5 rounded-full bg-white"></span>
+              MAYORA AUTONOMOUS MAINTENANCE • 24T
+            </div>
+            <h1 class="text-lg sm:text-xl font-extrabold leading-snug tracking-tight mt-1.5 drop-shadow-xs">SIDEL ROLLQUATTRO F35E</h1>
           </div>
-          <div id="sync-queue-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-[10px] font-bold shrink-0">
+          <div id="sync-queue-badge" class="hidden px-2.5 py-1 rounded-full bg-black/35 backdrop-blur-md border border-white/25 text-amber-200 text-[10px] font-bold shrink-0">
             0 antre sync
           </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-2 text-center">
-          <div class="bg-white/10 rounded-xl py-2 px-1">
-            <div class="text-[10px] text-slate-300">Total</div>
-            <div id="stat-total" class="text-base font-extrabold">53</div>
+        <div class="relative z-10 grid grid-cols-4 gap-2 sm:gap-2.5 text-center">
+          <div class="glass-tile rounded-2xl py-2.5 px-1.5 transition-transform">
+            <div class="text-[10px] sm:text-[11px] font-medium text-white/80">Total</div>
+            <div id="stat-total" class="text-lg sm:text-xl font-extrabold text-white mt-0.5">53</div>
           </div>
-          <div class="bg-emerald-500/20 border border-emerald-400/20 rounded-xl py-2 px-1">
-            <div class="text-[10px] text-emerald-200">Terisi</div>
-            <div id="stat-submitted" class="text-base font-extrabold text-emerald-300">0</div>
+          <div class="glass-tile rounded-2xl py-2.5 px-1.5 transition-transform">
+            <div class="inline-flex items-center justify-center gap-1 text-[10px] sm:text-[11px] font-medium text-emerald-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Terisi
+            </div>
+            <div id="stat-submitted" class="text-lg sm:text-xl font-extrabold text-emerald-300 mt-0.5">0</div>
           </div>
-          <div class="bg-sky-500/20 border border-sky-400/20 rounded-xl py-2 px-1">
-            <div class="text-[10px] text-sky-200">Draft</div>
-            <div id="stat-draft" class="text-base font-extrabold text-sky-300">0</div>
+          <div class="glass-tile rounded-2xl py-2.5 px-1.5 transition-transform">
+            <div class="inline-flex items-center justify-center gap-1 text-[10px] sm:text-[11px] font-medium text-[#EFEEE8]/90">
+              <span class="w-1.5 h-1.5 rounded-full bg-white"></span>Draft
+            </div>
+            <div id="stat-draft" class="text-lg sm:text-xl font-extrabold text-white mt-0.5">0</div>
           </div>
-          <div class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 px-1">
-            <div class="text-[10px] text-amber-200">Sisa</div>
-            <div id="stat-pending" class="text-base font-extrabold text-amber-300">53</div>
+          <div class="glass-tile rounded-2xl py-2.5 px-1.5 transition-transform">
+            <div class="inline-flex items-center justify-center gap-1 text-[10px] sm:text-[11px] font-medium text-amber-200">
+              <span class="w-1.5 h-1.5 rounded-full bg-amber-300"></span>Sisa
+            </div>
+            <div id="stat-pending" class="text-lg sm:text-xl font-extrabold text-amber-200 mt-0.5">53</div>
           </div>
         </div>
 
-        <div class="space-y-1">
-          <div class="flex justify-between text-[11px] text-slate-300">
+        <div class="relative z-10 space-y-1.5 pt-0.5">
+          <div class="flex justify-between text-[11px] font-medium text-white/85">
             <span id="hero-pct-label">Progres: 0%</span>
-            <span id="hero-hours-label" class="font-mono text-sky-200">W48 • 6.000 jam</span>
+            <span id="hero-hours-label" class="font-mono text-white/90">W48 • 6.000 jam</span>
           </div>
-          <div class="w-full h-2 bg-white/15 rounded-full overflow-hidden flex">
-            <div id="bar-submitted" class="h-full bg-emerald-400 transition-all duration-300" style="width:0%"></div>
-            <div id="bar-draft" class="h-full bg-sky-400 transition-all duration-300" style="width:0%"></div>
+          <div class="w-full h-2.5 bg-black/30 backdrop-blur-sm border border-white/15 rounded-full overflow-hidden flex p-[1px]">
+            <div id="bar-submitted" class="h-full bg-emerald-400 rounded-full transition-all duration-300" style="width:0%"></div>
+            <div id="bar-draft" class="h-full bg-white rounded-full transition-all duration-300" style="width:0%"></div>
           </div>
         </div>
       </div>
 
       <!-- Collapsible Operator Identity Card -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs space-y-2.5">
+      <div class="glass-surface glass-card rounded-2xl border border-white/75 p-3.5 space-y-2.5">
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-2">
             <span class="text-xs font-bold text-slate-800">Operator &amp; Shift</span>
             <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Auto-save Offline</span>
           </div>
-          <div class="inline-flex bg-slate-100 p-0.5 rounded-lg" id="scope-toggle">
+          <div class="inline-flex bg-[#EFEEE8] p-0.5 rounded-lg" id="scope-toggle">
             <button type="button" data-scope="all" id="btn-scope-all"
-              class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs">Semua (53)</button>
+              class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-[#000000] text-white shadow-2xs">Semua (53)</button>
             <button type="button" data-scope="scheduled" id="btn-scope-scheduled"
               class="px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600">Jadwal W48</button>
           </div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
           <input id="operator-name" type="text" placeholder="Nama Operator (wajib diisi)..."
-            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-[#EFEEE8]/65 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
           <select id="operator-shift"
-            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-[#EFEEE8]/65 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
             <option value="Shift 1 (Pagi)">Shift 1 (Pagi)</option>
             <option value="Shift 2 (Siang)">Shift 2 (Siang)</option>
             <option value="Shift 3 (Malam)">Shift 3 (Malam)</option>
@@ -152,28 +243,28 @@
       </div>
 
       <!-- Search, Jump & Filter Strip -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs space-y-2.5">
+      <div class="glass-surface glass-card rounded-2xl border border-white/75 p-3 space-y-2.5">
         <div class="flex items-center gap-2">
           <div class="relative flex-1">
             <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/>
             </svg>
             <input id="task-search" type="search" placeholder="Cari SOP, komponen, tugas..."
-              class="w-full text-sm pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              class="w-full text-sm pl-9 pr-3 py-2 rounded-xl border border-[#D3CCC7] bg-[#EFEEE8]/65 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
           <button id="btn-jump-next" type="button"
-            class="shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold">
+            class="shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-[#000000] hover:bg-neutral-800 border border-[#000000] text-white text-xs font-bold">
             ↓ Lanjut
           </button>
         </div>
 
         <div class="flex flex-wrap items-center justify-between gap-2">
           <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" id="filter-pills">
-            <button type="button" data-filter="all" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white">Semua</button>
-            <button type="button" data-filter="pending" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Belum</button>
-            <button type="button" data-filter="submitted" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Terisi</button>
-            <button type="button" data-filter="ok" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">OK</button>
-            <button type="button" data-filter="abnormal" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Abnormal</button>
+            <button type="button" data-filter="all" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#000000] text-white">Semua</button>
+            <button type="button" data-filter="pending" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#EFEEE8] text-slate-700">Belum</button>
+            <button type="button" data-filter="submitted" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#EFEEE8] text-slate-700">Terisi</button>
+            <button type="button" data-filter="ok" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#EFEEE8] text-slate-700">OK</button>
+            <button type="button" data-filter="abnormal" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#EFEEE8] text-slate-700">Abnormal</button>
           </div>
           <label class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 cursor-pointer select-none">
             <input id="toggle-hide-submitted" type="checkbox" class="rounded border-slate-300 text-blue-600" />
@@ -187,13 +278,13 @@
 
       <!-- Inline Submit Banner (appears when there are new drafts) -->
       <div id="draft-submit-bar" class="hidden fixed bottom-16 inset-x-0 z-20 px-3 pb-2 pointer-events-none">
-        <div class="max-w-3xl mx-auto bg-slate-900 text-white rounded-2xl p-3 shadow-xl border border-slate-700 flex items-center justify-between gap-3 pointer-events-auto">
+        <div class="max-w-3xl mx-auto bg-[#000000] text-white rounded-2xl p-3 shadow-xl border border-slate-700 flex items-center justify-between gap-3 pointer-events-auto">
           <div class="min-w-0">
             <div id="floating-draft-title" class="text-xs font-bold text-white truncate">0 item baru siap disimpan</div>
-            <div id="floating-draft-sub" class="text-[11px] text-sky-300 truncate">0 foto tersimpan lokal</div>
+            <div id="floating-draft-sub" class="text-[11px] text-[#D3CCC7] truncate">0 foto tersimpan lokal</div>
           </div>
           <button id="btn-open-submit" type="button"
-            class="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-extrabold shadow-sm">
+            class="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-[#EF0606] to-[#C80505] hover:from-[#DC0505] hover:to-[#B00404] text-white text-xs font-extrabold shadow-sm">
             Submit Sekarang
           </button>
         </div>
@@ -222,7 +313,7 @@
           ← Sebelumnya
         </button>
         <button id="btn-focus-next" type="button"
-          class="py-3 px-4 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-2xs active:scale-[0.98]">
+          class="py-3 px-4 rounded-2xl bg-[#000000] text-white text-sm font-bold shadow-2xs active:scale-[0.98]">
           Berikutnya →
         </button>
       </div>
@@ -232,23 +323,23 @@
     <section id="view-reports" class="hidden space-y-4">
 
       <!-- Primary Excel Form Export Card -->
-      <div class="rounded-2xl bg-gradient-to-br from-emerald-700 to-teal-800 text-white p-4 sm:p-5 shadow-md space-y-3">
+      <div class="rounded-3xl mayora-hero-gradient text-white p-4 sm:p-5 shadow-lg border border-white/20 space-y-3 relative overflow-hidden">
         <div class="flex items-start justify-between gap-3">
           <div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">Ekspor Formulir Resmi</div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-[#EF0606]">MAYORA • EKSPOR FORMULIR RESMI</div>
             <h2 class="text-base sm:text-lg font-extrabold mt-0.5">Export Form TBM ke Excel (.xlsx)</h2>
-            <p class="text-xs text-emerald-100 mt-1">
+            <p class="text-xs text-[#D3CCC7] mt-1">
               Menghasilkan file Excel berformat formulir standar pabrik: kop mesin, seluruh 53 item, warna status OK/Abnormal, catatan, KPI, dan kolom tanda tangan Operator &amp; Supervisor.
             </p>
           </div>
         </div>
         <div class="flex flex-wrap items-center gap-2 pt-1">
           <button id="btn-export-xlsx-main" type="button"
-            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs sm:text-sm font-extrabold shadow-sm transition-colors">
+            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-[#EF0606] text-white hover:bg-[#d10505] text-xs sm:text-sm font-extrabold shadow-sm transition-colors">
             ⬇ Unduh Form Excel (.xlsx)
           </button>
           <button id="btn-export-csv" type="button"
-            class="px-3.5 py-2.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-400/30 text-white text-xs font-bold transition-colors">
+            class="px-3.5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 border border-[#D3CCC7]/30 text-white text-xs font-bold transition-colors">
             Unduh CSV Mentah
           </button>
           <button id="btn-load-demo" type="button"
@@ -260,19 +351,19 @@
 
       <!-- KPI Summary -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-3.5 shadow-2xs">
           <div class="text-[11px] text-slate-500 font-medium">Total Batch Submit</div>
           <div id="kpi-reports" class="text-2xl font-extrabold text-slate-900 mt-0.5">0</div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-3.5 shadow-2xs">
           <div class="text-[11px] text-slate-500 font-medium">Progres Minggu Ini</div>
           <div id="kpi-compliance" class="text-2xl font-extrabold text-blue-700 mt-0.5">0%</div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-3.5 shadow-2xs">
           <div class="text-[11px] text-slate-500 font-medium">Kelengkapan Foto</div>
           <div id="kpi-photo-rate" class="text-2xl font-extrabold text-emerald-600 mt-0.5">0%</div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-3.5 shadow-2xs">
           <div class="text-[11px] text-slate-500 font-medium">Temuan Abnormal</div>
           <div id="kpi-abnormal" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</div>
         </div>
@@ -280,20 +371,20 @@
 
       <!-- Chart & Frequency Panel -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-4 shadow-2xs">
           <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3">Status Minggu Aktif</h3>
           <div class="relative h-56">
             <canvas id="eval-chart"></canvas>
           </div>
         </div>
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-4 shadow-2xs flex flex-col">
           <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3">Progres per Frekuensi</h3>
           <div id="freq-breakdown" class="space-y-3 flex-1 flex flex-col justify-center"></div>
         </div>
       </div>
 
       <!-- History List -->
-      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div class="bg-white rounded-2xl border border-[#D3CCC7] shadow-2xs overflow-hidden">
         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-2">
           <div>
             <h3 class="text-sm font-bold text-slate-900">Riwayat Submit Offline &amp; Online</h3>
@@ -313,7 +404,7 @@
     <section id="view-sync" class="hidden space-y-4">
 
       <!-- Offline & Google Sheets Sync Panel -->
-      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3.5">
+      <div class="bg-white rounded-2xl border border-[#D3CCC7] p-4 shadow-2xs space-y-3.5">
         <div class="flex items-start justify-between gap-2">
           <div>
             <h2 class="text-base font-extrabold text-slate-900">Sinkronisasi Offline &amp; Google Sheets</h2>
@@ -326,11 +417,11 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2.5">
-          <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+          <div class="rounded-xl bg-[#EFEEE8]/65 border border-[#D3CCC7] p-3">
             <div class="text-[11px] text-slate-500">Antrean Belum Terkirim</div>
             <div id="sync-pending-count" class="text-xl font-extrabold text-amber-600 mt-0.5">0 laporan</div>
           </div>
-          <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+          <div class="rounded-xl bg-[#EFEEE8]/65 border border-[#D3CCC7] p-3">
             <div class="text-[11px] text-slate-500">Status Penyimpanan HP</div>
             <div id="storage-engine-label" class="text-sm font-extrabold text-emerald-700 mt-1">IndexedDB Aktif</div>
           </div>
@@ -342,7 +433,7 @@
             <input id="sheets-webapp-url" type="url" placeholder="https://script.google.com/macros/s/.../exec"
               class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
             <button id="btn-save-sheets-url" type="button"
-              class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shrink-0">
+              class="px-4 py-2 rounded-xl bg-[#EF0606] hover:bg-[#C80505] text-white text-xs font-bold shrink-0">
               Simpan URL
             </button>
           </div>
@@ -363,29 +454,32 @@
       <!-- Printable QR Code Card -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
         <div id="qr-print-card" class="bg-white rounded-2xl border-2 border-slate-900 p-5 shadow-2xs text-center space-y-3">
-          <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-xl py-2.5 px-3">
-            <div class="text-[10px] font-semibold uppercase tracking-widest text-sky-300">TBM Offline App • F35E-24T</div>
-            <div class="text-sm font-extrabold mt-0.5">SIDEL ROLLQUATTRO F35E (24T)</div>
+          <div class="bg-[#000000] text-white rounded-xl py-2.5 px-3 border-b-4 border-[#EF0606] flex items-center justify-center gap-2.5">
+            <img src="data:image/jpeg;base64,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" alt="Mayora" class="w-9 h-9 rounded-lg bg-white p-0.5 object-contain shrink-0" />
+            <div class="text-left">
+              <div class="text-[10px] font-bold uppercase tracking-widest text-[#EF0606]">MAYORA • TBM OFFLINE APP</div>
+              <div class="text-sm font-extrabold leading-tight">SIDEL ROLLQUATTRO F35E (24T)</div>
+            </div>
           </div>
           <div class="py-1 flex flex-col items-center">
-            <div id="qr-code-box" class="p-2 bg-white border border-slate-200 rounded-2xl inline-flex items-center justify-center"></div>
+            <div id="qr-code-box" class="p-2 bg-white border border-[#D3CCC7] rounded-2xl inline-flex items-center justify-center"></div>
             <div id="qr-target-label" class="text-xs font-mono font-semibold text-slate-700 mt-2">Scan → Buka / Install ke Layar Utama</div>
           </div>
-          <div class="bg-slate-50 rounded-xl p-2.5 text-left border border-slate-200 text-[11px] text-slate-600 space-y-1">
+          <div class="bg-[#EFEEE8]/65 rounded-xl p-2.5 text-left border border-[#D3CCC7] text-[11px] text-slate-600 space-y-1">
             <div>1. Scan QR pakai kamera HP</div>
             <div>2. Ketuk <strong>Tambahkan ke Layar Utama</strong> agar bisa dipakai <strong>Offline</strong></div>
             <div>3. Kerjakan list &amp; foto bukti langsung dari aplikasi</div>
           </div>
         </div>
 
-        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+        <div class="bg-white rounded-2xl border border-[#D3CCC7] p-4 shadow-2xs space-y-3">
           <h3 class="text-sm font-extrabold text-slate-900">Pengaturan QR Mesin</h3>
           <div>
             <label for="qr-base-url" class="block text-xs font-semibold text-slate-700 mb-1">URL Aplikasi PWA (GitHub Pages / Sites)</label>
             <input id="qr-base-url" type="url" value="https://metzthor-hash.github.io/TBM-Label-L3/"
               class="w-full text-xs px-3 py-2 rounded-xl border border-slate-300 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
           </div>
-          <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200">
+          <div class="bg-[#EFEEE8]/65 rounded-xl p-2.5 border border-[#D3CCC7]">
             <div class="text-[10px] font-semibold uppercase text-slate-400">Link Tertanam</div>
             <div id="qr-full-url" class="text-xs font-mono text-blue-700 break-all mt-0.5"></div>
           </div>
@@ -402,10 +496,10 @@
   </main>
 
   <!-- Native-Style Bottom Tab Navigation -->
-  <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg safe-pb" role="tablist">
+  <nav class="fixed bottom-0 inset-x-0 z-30 glass-surface border-t border-[#D3CCC7]/80 shadow-lg safe-pb" role="tablist">
     <div class="max-w-3xl mx-auto grid grid-cols-4 h-16">
       <button id="nav-tasks" type="button" data-tab="tasks"
-        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-blue-700 font-bold">
+        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-[#EF0606] font-extrabold">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
         <span class="text-[11px]">Tugas</span>
       </button>
@@ -418,7 +512,7 @@
         class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-slate-500 font-medium relative">
         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
         <span class="text-[11px]">Form Excel</span>
-        <span id="nav-report-badge" class="hidden absolute top-1.5 right-4 sm:right-8 px-1.5 py-0.2 rounded-full bg-blue-600 text-white text-[9px] font-bold">0</span>
+        <span id="nav-report-badge" class="hidden absolute top-1.5 right-4 sm:right-8 px-1.5 py-0.2 rounded-full bg-[#EF0606] text-white text-[9px] font-bold">0</span>
       </button>
       <button id="nav-sync" type="button" data-tab="sync"
         class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-slate-500 font-medium">
@@ -438,11 +532,11 @@
         </div>
         <button id="btn-close-submit" type="button" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
       </div>
-      <div id="modal-submit-summary" class="bg-slate-50 rounded-xl p-3.5 text-xs space-y-1.5 border border-slate-200"></div>
+      <div id="modal-submit-summary" class="bg-[#EFEEE8]/65 rounded-xl p-3.5 text-xs space-y-1.5 border border-[#D3CCC7]"></div>
       <div id="modal-submit-note" class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3 text-xs"></div>
       <div class="flex justify-end gap-2">
         <button id="btn-cancel-submit" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">Cek Lagi</button>
-        <button id="btn-confirm-submit" type="button" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-extrabold">Simpan Sekarang</button>
+        <button id="btn-confirm-submit" type="button" class="px-4 py-2 rounded-xl bg-[#EF0606] hover:bg-[#C80505] text-white text-xs font-extrabold">Simpan Sekarang</button>
       </div>
     </div>
   </div>
@@ -462,12 +556,12 @@
   <!-- Report Detail Modal -->
   <div id="modal-detail" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
     <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[86vh] flex flex-col shadow-xl overflow-hidden">
-      <div class="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between gap-2">
+      <div class="px-4 py-3.5 border-b border-[#D3CCC7] flex items-center justify-between gap-2">
         <div class="min-w-0">
           <h3 id="detail-title" class="text-sm font-extrabold text-slate-900 truncate">Detail Batch</h3>
           <p id="detail-meta" class="text-xs text-slate-500 truncate"></p>
         </div>
-        <button id="btn-close-detail" type="button" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Tutup</button>
+        <button id="btn-close-detail" type="button" class="px-3 py-1 rounded-lg bg-[#EFEEE8] text-slate-700 text-xs font-bold">Tutup</button>
       </div>
       <div id="detail-body" class="p-3.5 overflow-y-auto space-y-2 flex-1"></div>
     </div>
@@ -493,7 +587,7 @@
   </div>
 
   <!-- Toast -->
-  <div id="toast" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-[70] px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-xl text-center max-w-[90vw]"></div>
+  <div id="toast" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-[70] px-4 py-2.5 rounded-xl bg-[#000000] text-white text-xs font-bold shadow-xl text-center max-w-[90vw]"></div>
 
   <script>
     const TBM_DATA = {"weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13", "W14", "W15", "W16", "W17", "W18", "W19", "W20", "W21", "W22", "W23", "W24", "W25", "W26", "W27", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51", "W52"], "hours": [125, 250, 375, 500, 625, 750, 875, 1000, 1125, 1250, 1375, 1500, 1625, 1750, 1875, 2000, 2125, 2250, 2375, 2500, 2625, 2750, 2875, 3000, 3125, 3250, 3375, 3500, 3625, 3750, 3875, 4000, 4125, 4250, 4375, 4500, 4625, 4750, 4875, 5000, 5125, 5250, 5375, 5500, 5625, 5750, 5875, 6000, 6125, 6250, 6375, 6500], "tasks": [{"no": 1, "sop": "AM-L0001", "ref": "MAINL0232 / F35E-M2 (Monthly)", "task": "[Monthly] Jacks: lubricating stem", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 2, "sop": "AM-L0002", "ref": "MAINL3079 / F35E-D1 / W3 (Weekly)", "task": "[Weekly] Pneumatic system: filter inspection and cleaning", "machineStatus": "OFF (Depressurized)", "duration": 12, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 3, "sop": "AM-L0004", "ref": "MAINL3173 / F35E-D2 (Weekly)", "task": "[Weekly] Starwheels and counterstarwheels: cleaning and checking the starwheels", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 6, "sop": "AM-L0007", "ref": "MAINL1078 / F35E-W1 (Weekly)", "task": "[Weekly] Whole machine: Cleaning all surfaces", "machineStatus": "OFF (Stopped)", "duration": 20, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 7, "sop": "AM-L0008", "ref": "MAIN10495 / F35E-W1 (Monthly)", "task": "[Monthly] Plates: Pad inspection and cleaning", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 10, "sop": "AM-L0016", "ref": "MAINL0231 / F35E-W1 (Weekly)", "task": "[Weekly] Jacks: Checking the heads", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 12, "sop": "AM-L0021", "ref": "MAINL0253 / F35E-S2 (Daily / Shift)", "task": "[Daily] Cutter roller: Clean external surfaces", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 13, "sop": "AM-L0022", "ref": "MAINL1091 / F35E-S1 (Daily)", "task": "[Daily] Glue roller: clean out label debris", "machineStatus": "OFF (Stopped - Hot Surface)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 14, "sop": "AM-L0023", "ref": "MAINL1110 / F35E-W1 (Weekly)", "task": "[Weekly] Photocells: Clean lens surfaces", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 15, "sop": "AM-L0026", "ref": "MAINL1072 / F35E-M1 (Monthly)", "task": "[Monthly] Glue tank: Clean the filter", "machineStatus": "OFF (Hot Surface)", "duration": 15, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 16, "sop": "AM-L0027", "ref": "MAINL1075 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Glue tank: Empty tank", "machineStatus": "OFF (Hot Surface)", "duration": 30, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 17, "sop": "AM-L0028", "ref": "MAIN10487 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: Clean and inspect pads", "machineStatus": "OFF (Stopped)", "duration": 15, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 18, "sop": "AM-L0030", "ref": "MAIN10500 / F35E-M2 (Weekly)", "task": "[Weekly] Labelling station: Checking and cleaning all film guide rollers", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 19, "sop": "AM-L0031", "ref": "MAINL1107 / F35E-D1 (Weekly)", "task": "[Weekly] Pneumatic system: Inspect circuit", "machineStatus": "ON (Pressurized, Machine Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 21, "sop": "AM-L0033", "ref": "MAIN10493 / F35E-S2 / W3 (Weekly)", "task": "[Weekly] Cutter roller: Checking cutter shell cleaning and lubrication", "machineStatus": "OFF (Stopped)", "duration": 15, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 22, "sop": "AM-L0034", "ref": "MAINL0262 / F35E-W2 / W10a (Weekly)", "task": "[Weekly] Label feed unit: clean the pinch roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 23, "sop": "AM-L0035", "ref": "MAINL1089 / F35E-W2 (Weekly)", "task": "[Weekly] Label feed unit: inspect and clean feed roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 24, "sop": "AM-L0036", "ref": "MAIN10497 / Update Baru F25E (Weekly)", "task": "[Weekly] Web tracker: Check for excessive wear or play and clean", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 25, "sop": "AM-L0037", "ref": "MAINL0248 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Vacuum drum: clean and inspect internal vacuum tunnels", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 26, "sop": "AM-L0038", "ref": "MAINL1081 / F35E-D3 (Daily)", "task": "[Daily] Vacuum drum: cleaning and lubricating the valve plate", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 27, "sop": "AM-L0039", "ref": "MAINL0274 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Auto splicer: Checking the blades and vacuum pads", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 28, "sop": "AM-L0042", "ref": "MAIN10494 / F35E-M2 (Monthly)", "task": "[Monthly] Cutter roller: inspect vacuum distributor and connecting pipes", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 29, "sop": "AM-L0046", "ref": "MAINL0252 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Cutter roller: Disc pad for adjusting oscillating roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 30, "sop": "AM-L0047", "ref": "MAIN10496 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Notch reading photocell and oscillating roller: Adjustment screw", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 31, "sop": "AM-L0048", "ref": "MAINL3044 / F35E-W3 (Weekly)", "task": "[Weekly] Cutter roller: clean blow-off block and fixed blade", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 32, "sop": "AM-L0049", "ref": "MAIN11498 / Update Baru F25E (Weekly)", "task": "[Weekly] Auto splicer: Cleaning and checking the encoder", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 33, "sop": "AM-L0050", "ref": "MAIN12367 / F35E-Y1 (Weekly Check)", "task": "[Weekly] Cutter roller: check oil level and inspect magnetic caps", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 34, "sop": "AM-L0051", "ref": "MAIN10491 / F35E-W3 (Quarterly Deep)", "task": "[Quarterly] Cutter roller: clean and check the blow-off block", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 35, "sop": "AM-L0052", "ref": "MAINL0289 / F35E-W2 / W10a (Weekly)", "task": "[Weekly] Label feed unit: check the pinch roller", "machineStatus": "OFF (Stopped)", "duration": 8, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 36, "sop": "AM-L0053", "ref": "MAINL1086 / F35E-M2 (Monthly)", "task": "[Monthly] Cutter roller: inspect static and rotary blade", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 37, "sop": "AM-L0064", "ref": "MAINL3108 / F35E-M2 (Monthly)", "task": "[Monthly] Labelling station: lubricate all film guide rollers", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 38, "sop": "AM-L0065", "ref": "MAINL3159 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: checking solvent level", "machineStatus": "OFF (Stopped)", "duration": 1, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 39, "sop": "AM-L0066", "ref": "MAINL3158 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: checking residual solvent level", "machineStatus": "OFF (Stopped)", "duration": 1, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 40, "sop": "AM-L0070", "ref": "MAINL3157 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: check the filter", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 41, "sop": "AM-L0083", "ref": "MAIN10508 / F35E-M1 / Task B64 (Monthly)", "task": "[Monthly] Glue roller: checking glue scraper wear", "machineStatus": "OFF (Hot Surface)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 42, "sop": "AM-L0146", "ref": "MAIN10972 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Cleaning the steering column containing profiles", "machineStatus": "OFF (ADJUST Mode)", "duration": 30, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 43, "sop": "AM-L0148", "ref": "MAIN11356 / Update Baru F25E (Weekly)", "task": "[Weekly] Checking the safety valve of the vacuum system", "machineStatus": "ON (Vacuum Pump Running)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 44, "sop": "AM-L0151", "ref": "MAIN10488 / F35E-W3 (Weekly)", "task": "[Weekly] Cleaning the filter of the vacuum system safety valve", "machineStatus": "ON (Vacuum Pump Disabled)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 45, "sop": "AM-L0155", "ref": "MAINL1070 / F35E-W3 (Weekly)", "task": "[Weekly] Vacuum system: Cleaning filters", "machineStatus": "ON (Vacuum Pump Disabled)", "duration": 10, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 46, "sop": "AM-L0161", "ref": "MAIN11321 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: bearing lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 47, "sop": "AM-L0163", "ref": "MAIN11323 / F35E-W1 (Weekly)", "task": "[Weekly] Platform belt transmission lubrication system", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 48, "sop": "AM-L0166", "ref": "MAIN11325 / F35E-M2 (Monthly)", "task": "[Monthly] Reel stand lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 49, "sop": "AM-L0167", "ref": "MAIN11326 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Glue roller: bearing lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 50, "sop": "AM-L0168", "ref": "MAIN11327 / F35E-2W1 (Fortnightly)", "task": "[Fortnightly (2 Weeks)] Main shaft grooved carousel greasing", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1]}, {"no": 51, "sop": "AM-L0169", "ref": "MAIN11223 / F35E-M1 (Monthly)", "task": "[Monthly] Vacuum drum: checking glue distribution", "machineStatus": "ON (Adjust / Test Mode)", "duration": 2, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 53, "sop": "AM-L0172", "ref": "MAIN12302 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Vacuum drum: cleaning and lubricating the valve plate", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 54, "sop": "AM-L0173", "ref": "MAIN12303 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Base gears: lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 55, "sop": "AM-L0174", "ref": "MAIN12304 / F35E-M1 (Monthly)", "task": "[Monthly] Glue roller: checking and cleaning the label extraction blade", "machineStatus": "OFF (Hot Surface)", "duration": 10, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 56, "sop": "AM-L0179", "ref": "MAIN12346 / F35E-W1 (Weekly)", "task": "[Weekly] Glue roller: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 57, "sop": "AM-L0180", "ref": "MAIN12347 / F35E-W1 (Weekly)", "task": "[Weekly] Cutter roller: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 58, "sop": "AM-L0181", "ref": "MAIN12348 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 59, "sop": "AM-L0182", "ref": "MAIN12349 / F35E-2W1 (Fortnightly)", "task": "[Fortnightly (2 Weeks)] Labelling station: lubricating the adjustment screw", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1]}, {"no": 60, "sop": "AM-L0183", "ref": "MAIN12350 / F35E-W1 (Weekly)", "task": "[Weekly] Centralized lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}]};
@@ -580,12 +674,12 @@
     }
 
     function getFreqInfo(taskName) {
-      if (taskName.startsWith('[Daily]')) return { key: 'Daily', label: 'Daily', cls: 'bg-sky-50 text-sky-700 border-sky-200' };
-      if (taskName.startsWith('[Weekly]')) return { key: 'Weekly', label: 'Weekly', cls: 'bg-indigo-50 text-indigo-700 border-indigo-200' };
-      if (taskName.startsWith('[Fortnightly')) return { key: 'Fortnightly', label: '2 Mingguan', cls: 'bg-violet-50 text-violet-700 border-violet-200' };
-      if (taskName.startsWith('[Monthly]')) return { key: 'Monthly', label: 'Monthly', cls: 'bg-amber-50 text-amber-700 border-amber-200' };
-      if (taskName.startsWith('[Quarterly]')) return { key: 'Quarterly', label: 'Quarterly', cls: 'bg-rose-50 text-rose-700 border-rose-200' };
-      return { key: 'Other', label: 'TBM', cls: 'bg-slate-100 text-slate-700 border-slate-200' };
+      if (taskName.startsWith('[Daily]')) return { key: 'Daily', label: 'Daily', cls: 'bg-sky-100/80 text-sky-800 border-sky-200/80', glass: 'glass-card-daily' };
+      if (taskName.startsWith('[Weekly]')) return { key: 'Weekly', label: 'Weekly', cls: 'bg-indigo-100/80 text-indigo-800 border-indigo-200/80', glass: 'glass-card-weekly' };
+      if (taskName.startsWith('[Fortnightly')) return { key: 'Fortnightly', label: '2 Mingguan', cls: 'bg-violet-100/80 text-violet-800 border-violet-200/80', glass: 'glass-card-fortnightly' };
+      if (taskName.startsWith('[Monthly]')) return { key: 'Monthly', label: 'Monthly', cls: 'bg-amber-100/80 text-amber-800 border-amber-200/80', glass: 'glass-card-monthly' };
+      if (taskName.startsWith('[Quarterly]')) return { key: 'Quarterly', label: 'Quarterly', cls: 'bg-rose-100/80 text-rose-800 border-rose-200/80', glass: 'glass-card-quarterly' };
+      return { key: 'Other', label: 'TBM', cls: 'bg-[#EFEEE8] text-slate-700 border-[#D3CCC7]', glass: 'glass-card-weekly' };
     }
 
     function cleanTitle(taskName) { return taskName.replace(/^\[[^\]]+\]\s*/, ''); }
@@ -680,8 +774,8 @@
       const btnSched = document.getElementById('btn-scope-scheduled');
       btnAll.textContent = `Semua (${TBM_DATA.tasks.length})`;
       btnSched.textContent = `Jadwal ${wk} (${schedTasks.length})`;
-      btnAll.className = state.scopeMode === 'all' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
-      btnSched.className = state.scopeMode === 'scheduled' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
+      btnAll.className = state.scopeMode === 'all' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-[#000000] text-white shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
+      btnSched.className = state.scopeMode === 'scheduled' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-[#000000] text-white shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
 
       let subCount = 0, draftCount = 0, draftPhotos = 0, pendCount = 0;
       tasks.forEach(t => {
@@ -743,7 +837,7 @@
 
       const listEl = document.getElementById('task-list');
       if (filtered.length === 0) {
-        listEl.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-500">Tidak ada tugas pada filter ini.</div>`;
+        listEl.innerHTML = `<div class="bg-white rounded-2xl border border-[#D3CCC7] p-8 text-center text-xs text-slate-500">Tidak ada tugas pada filter ini.</div>`;
         return;
       }
 
@@ -754,22 +848,22 @@
 
         if (sub) {
           const isAbn = sub.status === 'abnormal';
-          const accent = isAbn ? 'border-rose-200 border-l-rose-500 bg-rose-50/30' : 'border-emerald-200 border-l-emerald-500 bg-emerald-50/25';
+          const accent = isAbn ? 'glass-card-done-abn' : 'glass-card-done-ok';
           const pill = isAbn
-            ? '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-600 text-white">⚠ TERISI • ABNORMAL</span>'
-            : '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-600 text-white">✓ SUDAH TERISI</span>';
+            ? '<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-[#EF0606] text-white shadow-2xs">⚠ TERISI • ABNORMAL</span>'
+            : '<span class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-600 text-white shadow-2xs">✓ SUDAH TERISI</span>';
           return `
-            <article class="rounded-2xl border border-l-4 ${accent} p-3.5 shadow-2xs" data-sop="${escapeHtml(t.sop)}">
+            <article class="glass-card rounded-2xl border border-l-4 ${accent} p-3.5" data-sop="${escapeHtml(t.sop)}">
               <div class="flex flex-wrap items-center justify-between gap-1.5">
                 <div class="flex items-center gap-1.5">
                   <span class="text-xs font-extrabold text-slate-400">#${masterIdx}</span>
-                  <span class="text-xs font-mono font-bold text-slate-800 bg-white border border-slate-200 px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
+                  <span class="text-xs font-mono font-bold text-slate-800 bg-white border border-[#D3CCC7] px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
                   <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${freq.cls}">${freq.label}</span>
                 </div>
                 ${pill}
               </div>
               <h3 class="text-sm font-bold text-slate-800 mt-2 leading-snug">${escapeHtml(cleanTitle(t.task))}</h3>
-              <div class="mt-2.5 p-2.5 rounded-xl bg-white border border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+              <div class="mt-2.5 p-2.5 rounded-xl bg-white border border-[#D3CCC7]/80 flex flex-wrap items-center justify-between gap-2">
                 <div class="min-w-0 flex-1 text-[11px] text-slate-600">
                   <div>🔒 <strong>${escapeHtml(sub.operatorName)}</strong> (${escapeHtml(sub.shift)}) • ${escapeHtml(sub.submittedAt)}</div>
                   ${sub.note ? `<div class="text-rose-700 mt-1 font-medium">Catatan: ${escapeHtml(sub.note)}</div>` : ''}
@@ -787,17 +881,21 @@
 
         const d = getItemDraft(wk, t.sop);
         const filled = d.status === 'ok' || d.status === 'abnormal';
-        const accent = d.status === 'ok' ? 'border-blue-200 border-l-blue-600 bg-white' : d.status === 'abnormal' ? 'border-rose-300 border-l-rose-600 bg-rose-50/20' : 'border-slate-200 border-l-slate-300 bg-white';
-        const okCls = d.status === 'ok' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-300';
-        const abnCls = d.status === 'abnormal' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 border-slate-300';
+        const accent = d.status === 'ok' ? 'glass-card-done-ok' : d.status === 'abnormal' ? 'glass-card-done-abn' : freq.glass;
+        const okCls = d.status === 'ok'
+          ? 'bg-emerald-600 text-white border-emerald-600 shadow-sm'
+          : 'bg-emerald-50/85 hover:bg-emerald-100 text-emerald-800 border-emerald-200/90 shadow-2xs';
+        const abnCls = d.status === 'abnormal'
+          ? 'bg-[#EF0606] text-white border-[#EF0606] shadow-sm shadow-red-500/30'
+          : 'bg-rose-100/85 hover:bg-rose-200/90 text-[#B91C1C] border-rose-300/90 shadow-2xs';
         const showNote = d.showNote || d.status === 'abnormal' || Boolean(d.note);
 
         return `
-          <article class="rounded-2xl border border-l-4 ${accent} p-3.5 shadow-2xs" data-sop="${escapeHtml(t.sop)}" data-pending="${!filled}">
+          <article class="glass-card rounded-2xl border border-l-4 ${accent} p-3.5" data-sop="${escapeHtml(t.sop)}" data-pending="${!filled}">
             <div class="flex items-center justify-between gap-2">
               <div class="flex flex-wrap items-center gap-1.5">
                 <span class="text-xs font-extrabold text-slate-400">#${masterIdx}</span>
-                <span class="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
+                <span class="text-xs font-mono font-bold text-slate-800 bg-[#EFEEE8] px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${freq.cls}">${freq.label}</span>
                 ${filled ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">Draft</span>' : ''}
               </div>
@@ -811,16 +909,16 @@
                 class="flex-1 min-w-[84px] py-2.5 rounded-xl border text-xs font-extrabold ${okCls}">✓ OK</button>
               <button type="button" data-action="set-abnormal" data-sop="${escapeHtml(t.sop)}"
                 class="flex-1 min-w-[96px] py-2.5 rounded-xl border text-xs font-extrabold ${abnCls}">⚠ Abnormal</button>
-              <label class="flex-1 min-w-[100px] py-2.5 px-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-xs font-extrabold text-center cursor-pointer">
+              <label class="flex-1 min-w-[100px] py-2.5 px-2 rounded-xl border border-[#000000]/30 bg-[#EFEEE8] hover:bg-[#D3CCC7]/60 text-[#000000] text-xs font-extrabold text-center cursor-pointer">
                 📷 ${d.photoDataUrl ? 'Ganti' : 'Foto'}
                 <input type="file" accept="image/*" capture="environment" data-action="upload-photo" data-sop="${escapeHtml(t.sop)}" class="hidden" />
               </label>
               <button type="button" data-action="toggle-note" data-sop="${escapeHtml(t.sop)}"
-                class="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-bold">✎</button>
+                class="py-2.5 px-3 rounded-xl border border-[#D3CCC7] bg-[#EFEEE8]/65 text-slate-600 text-xs font-bold">✎</button>
             </div>
 
             ${d.photoDataUrl ? `
-              <div class="mt-2.5 flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="mt-2.5 flex items-center gap-2.5 p-2 rounded-xl bg-[#EFEEE8]/65 border border-[#D3CCC7]">
                 <img src="${d.photoDataUrl}" data-action="zoom-draft" data-sop="${escapeHtml(t.sop)}" class="w-12 h-12 rounded-lg object-cover border border-slate-300 cursor-pointer shrink-0" />
                 <div class="min-w-0 flex-1 text-[11px]">
                   <div class="font-bold text-emerald-700">Foto bukti tersimpan</div>
@@ -832,7 +930,7 @@
             ${showNote ? `
               <input type="text" data-action="edit-note" data-sop="${escapeHtml(t.sop)}" value="${escapeHtml(d.note)}"
                 placeholder="${d.status === 'abnormal' ? 'Jelaskan temuan abnormal...' : 'Catatan tambahan (opsional)...'}"
-                class="mt-2 w-full text-xs px-3 py-2 rounded-xl border ${d.status === 'abnormal' ? 'border-rose-300 bg-rose-50/40' : 'border-slate-200 bg-slate-50'} focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />` : ''}
+                class="mt-2 w-full text-xs px-3 py-2 rounded-xl border ${d.status === 'abnormal' ? 'border-rose-300 bg-rose-50/40' : 'border-[#D3CCC7] bg-[#EFEEE8]/65'} focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />` : ''}
           </article>`;
       }).join('');
     }
@@ -851,9 +949,9 @@
 
       const container = document.getElementById('focus-card-container');
       container.innerHTML = `
-        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+        <div class="glass-card ${freq.glass} rounded-3xl border border-l-4 p-5 space-y-4">
           <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">Item ${state.focusIndex + 1} dari ${tasks.length}</span>
+            <span class="text-xs font-extrabold text-[#000000] bg-[#EFEEE8] border border-[#D3CCC7] px-3 py-1 rounded-full">Item ${state.focusIndex + 1} dari ${tasks.length}</span>
             <span class="text-xs font-mono font-bold text-slate-600">${escapeHtml(t.sop)} • ${t.duration} mnt</span>
           </div>
 
@@ -877,22 +975,22 @@
           ` : `
             <div class="grid grid-cols-2 gap-3 pt-1">
               <button type="button" data-focus-action="set-ok" data-sop="${escapeHtml(t.sop)}"
-                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'ok' ? 'bg-emerald-600 border-emerald-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-800'}">
+                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'ok' ? 'bg-emerald-600 border-emerald-600 text-white shadow-md' : 'bg-emerald-50/90 border-emerald-300 text-emerald-800'}">
                 ✓ OK
               </button>
               <button type="button" data-focus-action="set-abnormal" data-sop="${escapeHtml(t.sop)}"
-                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'abnormal' ? 'bg-rose-600 border-rose-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-800'}">
+                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'abnormal' ? 'bg-[#EF0606] border-[#EF0606] text-white shadow-md shadow-red-500/30' : 'bg-rose-100/90 border-rose-300 text-[#B91C1C]'}">
                 ⚠ Abnormal
               </button>
             </div>
 
-            <label class="block w-full py-3.5 rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50/70 hover:bg-blue-100 text-blue-800 text-sm font-extrabold text-center cursor-pointer">
+            <label class="block w-full py-3.5 rounded-2xl border-2 border-dashed border-[#000000]/40 bg-[#EFEEE8] hover:bg-[#D3CCC7]/50 text-[#000000] text-sm font-extrabold text-center cursor-pointer">
               📷 ${d.photoDataUrl ? 'Ambil Ulang Foto Bukti' : 'Ambil Foto Bukti (Kamera)'}
               <input type="file" accept="image/*" capture="environment" data-focus-action="upload-photo" data-sop="${escapeHtml(t.sop)}" class="hidden" />
             </label>
 
             ${d.photoDataUrl ? `
-              <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+              <div class="flex items-center gap-3 p-2.5 rounded-xl bg-[#EFEEE8]/65 border border-[#D3CCC7]">
                 <img src="${d.photoDataUrl}" class="w-16 h-16 rounded-xl object-cover border border-slate-300" />
                 <div class="flex-1 text-xs">
                   <div class="font-bold text-emerald-700">Foto siap (~${d.photoSizeKb} KB)</div>
@@ -902,10 +1000,10 @@
 
             <input type="text" data-focus-action="edit-note" data-sop="${escapeHtml(t.sop)}" value="${escapeHtml(d.note)}"
               placeholder="Catatan temuan / keterangan (opsional)..."
-              class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+              class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-[#EFEEE8]/65 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
 
             <button type="button" data-focus-action="open-submit"
-              class="w-full py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm font-extrabold shadow-sm">
+              class="w-full py-3 rounded-2xl bg-gradient-to-r from-[#EF0606] to-[#C80505] text-white text-sm font-extrabold shadow-sm">
               Simpan &amp; Submit Draft Sekarang
             </button>
           `}
@@ -962,7 +1060,7 @@
               <span class="font-bold text-slate-700">${k}</span>
               <span class="text-slate-500">${v.d}/${v.t} (${p}%)</span>
             </div>
-            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+            <div class="w-full h-2 bg-[#EFEEE8] rounded-full overflow-hidden">
               <div class="h-full bg-blue-600 rounded-full" style="width:${p}%"></div>
             </div>
           </div>`;
@@ -986,7 +1084,7 @@
         histEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">Belum ada riwayat submit. Anda tetap bisa klik <strong>Unduh Form Excel (.xlsx)</strong> untuk melihat format formulir kosong/draft.</div>`;
       } else {
         histEl.innerHTML = state.reports.map(r => `
-          <div class="p-3.5 flex flex-wrap items-center justify-between gap-2 hover:bg-slate-50">
+          <div class="p-3.5 flex flex-wrap items-center justify-between gap-2 hover:bg-[#EFEEE8]/65">
             <div class="min-w-0">
               <div class="flex items-center gap-1.5 flex-wrap">
                 <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">${escapeHtml(r.weekCode)}</span>
@@ -1041,17 +1139,17 @@
         // Title Banner
         ws.mergeCells('A1:K1');
         const c1 = ws.getCell('A1');
-        c1.value = 'FORMULIR LAPORAN AKTUAL TIME-BASED MAINTENANCE (TBM)';
+        c1.value = 'MAYORA — FORMULIR LAPORAN AKTUAL TIME-BASED MAINTENANCE (TBM)';
         c1.font = { name: 'Calibri', size: 15, bold: true, color: { argb: 'FFFFFFFF' } };
-        c1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        c1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF000000' } };
         c1.alignment = { vertical: 'middle', horizontal: 'center' };
         ws.getRow(1).height = 30;
 
         ws.mergeCells('A2:K2');
         const c2 = ws.getCell('A2');
         c2.value = 'MESIN: SIDEL ROLLQUATTRO F35E (24T)   |   ID ASET: F35E-24T   |   AUTONOMOUS MAINTENANCE';
-        c2.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FF1E3A8A' } };
-        c2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0F2FE' } };
+        c2.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFEF0606' } };
+        c2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFEFEEE8' } };
         c2.alignment = { vertical: 'middle', horizontal: 'center' };
         ws.getRow(2).height = 20;
 
@@ -1080,7 +1178,7 @@
           const cell = headerRow.getCell(idx + 1);
           cell.value = h;
           cell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
-          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF000000' } };
           cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
           cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
         });
@@ -1147,7 +1245,7 @@
         ws.mergeCells(sumRowNum, 8, sumRowNum, 11);
         const compPct = Math.round(((okCnt + abnCnt) / TBM_DATA.tasks.length) * 100);
         sumRow.getCell(8).value = `COMPLIANCE AKTUAL: ${compPct}%`;
-        sumRow.getCell(8).font = { bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
+        sumRow.getCell(8).font = { bold: true, size: 10, color: { argb: 'FFEF0606' } };
         sumRow.getCell(8).alignment = { horizontal: 'center', vertical: 'middle' };
         for (let c = 1; c <= 11; c++) {
           sumRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
@@ -1449,10 +1547,10 @@
         document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
         const nav = document.getElementById(`nav-${t}`);
         if (t === tab) {
-          nav.classList.add('text-blue-700', 'font-bold');
+          nav.classList.add('text-[#EF0606]', 'font-extrabold');
           nav.classList.remove('text-slate-500', 'font-medium');
         } else {
-          nav.classList.remove('text-blue-700', 'font-bold');
+          nav.classList.remove('text-[#EF0606]', 'font-extrabold');
           nav.classList.add('text-slate-500', 'font-medium');
         }
       });
@@ -1539,7 +1637,7 @@
         const b = e.target.closest('.filter-pill'); if (!b) return;
         state.filter = b.dataset.filter;
         document.querySelectorAll('.filter-pill').forEach(p => {
-          p.className = p === b ? 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white' : 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700';
+          p.className = p === b ? 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#000000] text-white' : 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-[#EFEEE8] text-slate-700';
         });
         renderTasksTab();
       });
@@ -1679,7 +1777,7 @@
         document.getElementById('detail-title').textContent = `${r.weekCode} — ${r.operatorName}`;
         document.getElementById('detail-meta').textContent = `${r.shift} • ${r.submittedAt} • ${r.completedCount} item`;
         document.getElementById('detail-body').innerHTML = r.items.map(it => `
-          <div class="p-2.5 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs">
+          <div class="p-2.5 rounded-xl border border-[#D3CCC7] flex items-center justify-between gap-2 text-xs">
             <div class="min-w-0">
               <div class="font-bold"><span class="font-mono">${escapeHtml(it.sop)}</span> • <span class="${it.status === 'ok' ? 'text-emerald-700' : 'text-rose-700'}">${it.status.toUpperCase()}</span></div>
               <div class="text-slate-600 truncate">${escapeHtml(cleanTitle(it.task))}</div>
@@ -1725,12 +1823,12 @@
     }
 
     window.addEventListener('DOMContentLoaded', init);
-    
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', () => {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
       });
     }
+    
   </script>
 </body>
 </html>

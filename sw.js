@@ -1,9 +1,9 @@
-const CACHE_NAME = 'tbm-f35e-pwa-v3';
+const CACHE_NAME = 'tbm-f35e-mayora-v7';
 const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './icon.svg',
+  './icon.png',
   'https://cdn.tailwindcss.com/3.4.17',
   'https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js',
   'https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js',
