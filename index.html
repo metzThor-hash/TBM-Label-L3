@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>TBM App — Sidel RollQuattro F35E (24T)</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+  <style>
+    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; -webkit-tap-highlight-color: transparent; overscroll-behavior-y: contain; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    @keyframes pulseRing {
+      0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.55); }
+      70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+    }
+    .jump-highlight { animation: pulseRing 1.1s ease-out 2; }
+    @media print {
+      body * { visibility: hidden !important; }
+      #qr-print-card, #qr-print-card * { visibility: visible !important; }
+      #qr-print-card {
+        position: fixed !important; left: 50% !important; top: 24px !important;
+        transform: translateX(-50%) !important; width: 340px !important;
+        box-shadow: none !important; border: 2px solid #0f172a !important;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-100 text-slate-900 min-h-screen flex flex-col">
+
+  <!-- Native-style App Top Bar -->
+  <header class="sticky top-0 z-30 bg-slate-900 text-white shadow-md">
+    <div class="max-w-3xl mx-auto px-3.5 h-14 flex items-center justify-between gap-2">
+      <div class="flex items-center gap-2.5 min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-sky-400 to-blue-600 text-white flex items-center justify-center font-extrabold text-xs shadow-inner shrink-0">
+          F35E
+        </div>
+        <div class="min-w-0">
+          <div class="text-sm font-extrabold truncate leading-tight tracking-tight">TBM Sidel F35E</div>
+          <div class="flex items-center gap-1.5 text-[11px] text-slate-300 leading-tight">
+            <span id="net-status-dot" class="w-2 h-2 rounded-full bg-emerald-400 shrink-0"></span>
+            <span id="net-status-text" class="truncate">Siap Offline • IndexedDB</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-1.5 shrink-0">
+        <select id="week-select" aria-label="Pilih Minggu"
+          class="text-xs font-bold bg-white/10 border border-white/15 rounded-xl px-2.5 py-1.5 text-white focus:outline-none cursor-pointer [&>option]:text-slate-900">
+        </select>
+        <button id="btn-export-xlsx-top" type="button"
+          class="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white text-xs font-bold transition-colors shadow-xs"
+          title="Export Form Excel (.xlsx)">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <span class="hidden sm:inline">Form Excel</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Scrollable Viewport -->
+  <main class="flex-1 max-w-3xl w-full mx-auto px-3 sm:px-4 py-3.5 pb-36">
+
+    <!-- ==================== TAB 1: DAFTAR TUGAS (LIST) ==================== -->
+    <section id="view-tasks" class="space-y-3">
+
+      <!-- Compact Hero Progress Dashboard -->
+      <div class="rounded-2xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-4 shadow-md space-y-3.5">
+        <div class="flex items-center justify-between gap-2">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-sky-300">Autonomous Maintenance • 24T</div>
+            <h1 class="text-base sm:text-lg font-extrabold leading-snug">SIDEL ROLLQUATTRO F35E</h1>
+          </div>
+          <div id="sync-queue-badge" class="hidden px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-amber-200 text-[10px] font-bold shrink-0">
+            0 antre sync
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-2 text-center">
+          <div class="bg-white/10 rounded-xl py-2 px-1">
+            <div class="text-[10px] text-slate-300">Total</div>
+            <div id="stat-total" class="text-base font-extrabold">53</div>
+          </div>
+          <div class="bg-emerald-500/20 border border-emerald-400/20 rounded-xl py-2 px-1">
+            <div class="text-[10px] text-emerald-200">Terisi</div>
+            <div id="stat-submitted" class="text-base font-extrabold text-emerald-300">0</div>
+          </div>
+          <div class="bg-sky-500/20 border border-sky-400/20 rounded-xl py-2 px-1">
+            <div class="text-[10px] text-sky-200">Draft</div>
+            <div id="stat-draft" class="text-base font-extrabold text-sky-300">0</div>
+          </div>
+          <div class="bg-amber-500/20 border border-amber-400/20 rounded-xl py-2 px-1">
+            <div class="text-[10px] text-amber-200">Sisa</div>
+            <div id="stat-pending" class="text-base font-extrabold text-amber-300">53</div>
+          </div>
+        </div>
+
+        <div class="space-y-1">
+          <div class="flex justify-between text-[11px] text-slate-300">
+            <span id="hero-pct-label">Progres: 0%</span>
+            <span id="hero-hours-label" class="font-mono text-sky-200">W48 • 6.000 jam</span>
+          </div>
+          <div class="w-full h-2 bg-white/15 rounded-full overflow-hidden flex">
+            <div id="bar-submitted" class="h-full bg-emerald-400 transition-all duration-300" style="width:0%"></div>
+            <div id="bar-draft" class="h-full bg-sky-400 transition-all duration-300" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collapsible Operator Identity Card -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs space-y-2.5">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-bold text-slate-800">Operator &amp; Shift</span>
+            <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">Auto-save Offline</span>
+          </div>
+          <div class="inline-flex bg-slate-100 p-0.5 rounded-lg" id="scope-toggle">
+            <button type="button" data-scope="all" id="btn-scope-all"
+              class="px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs">Semua (53)</button>
+            <button type="button" data-scope="scheduled" id="btn-scope-scheduled"
+              class="px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600">Jadwal W48</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <input id="operator-name" type="text" placeholder="Nama Operator (wajib diisi)..."
+            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          <select id="operator-shift"
+            class="w-full text-sm px-3 py-2 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <option value="Shift 1 (Pagi)">Shift 1 (Pagi)</option>
+            <option value="Shift 2 (Siang)">Shift 2 (Siang)</option>
+            <option value="Shift 3 (Malam)">Shift 3 (Malam)</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Search, Jump & Filter Strip -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-3 shadow-2xs space-y-2.5">
+        <div class="flex items-center gap-2">
+          <div class="relative flex-1">
+            <svg class="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-4.35-4.35m0 0A7.5 7.5 0 103.5 10.5a7.5 7.5 0 0013.15 6.15z"/>
+            </svg>
+            <input id="task-search" type="search" placeholder="Cari SOP, komponen, tugas..."
+              class="w-full text-sm pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <button id="btn-jump-next" type="button"
+            class="shrink-0 inline-flex items-center gap-1 px-3 py-2 rounded-xl bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700 text-xs font-bold">
+            ↓ Lanjut
+          </button>
+        </div>
+
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5" id="filter-pills">
+            <button type="button" data-filter="all" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white">Semua</button>
+            <button type="button" data-filter="pending" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Belum</button>
+            <button type="button" data-filter="submitted" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Terisi</button>
+            <button type="button" data-filter="ok" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">OK</button>
+            <button type="button" data-filter="abnormal" class="filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700">Abnormal</button>
+          </div>
+          <label class="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-600 cursor-pointer select-none">
+            <input id="toggle-hide-submitted" type="checkbox" class="rounded border-slate-300 text-blue-600" />
+            <span>Sembunyikan yg terisi</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Task List -->
+      <div id="task-list" class="space-y-2.5"></div>
+
+      <!-- Inline Submit Banner (appears when there are new drafts) -->
+      <div id="draft-submit-bar" class="hidden fixed bottom-16 inset-x-0 z-20 px-3 pb-2 pointer-events-none">
+        <div class="max-w-3xl mx-auto bg-slate-900 text-white rounded-2xl p-3 shadow-xl border border-slate-700 flex items-center justify-between gap-3 pointer-events-auto">
+          <div class="min-w-0">
+            <div id="floating-draft-title" class="text-xs font-bold text-white truncate">0 item baru siap disimpan</div>
+            <div id="floating-draft-sub" class="text-[11px] text-sky-300 truncate">0 foto tersimpan lokal</div>
+          </div>
+          <button id="btn-open-submit" type="button"
+            class="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white text-xs font-extrabold shadow-sm">
+            Submit Sekarang
+          </button>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 2: MODE FOKUS (1-BY-1 MOBILE CARD) ==================== -->
+    <section id="view-focus" class="hidden space-y-3">
+      <div class="flex items-center justify-between gap-2">
+        <div>
+          <h2 class="text-base font-extrabold text-slate-900">Mode Fokus Lapangan</h2>
+          <p class="text-xs text-slate-500">Kerjakan satu per satu dengan tombol besar khusus layar HP</p>
+        </div>
+        <button id="btn-focus-jump-pending" type="button"
+          class="px-3 py-1.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-700 text-xs font-bold">
+          Ke Belum Diisi
+        </button>
+      </div>
+
+      <div id="focus-card-container"></div>
+
+      <div class="grid grid-cols-2 gap-2.5">
+        <button id="btn-focus-prev" type="button"
+          class="py-3 px-4 rounded-2xl bg-white border border-slate-300 text-slate-800 text-sm font-bold shadow-2xs active:scale-[0.98]">
+          ← Sebelumnya
+        </button>
+        <button id="btn-focus-next" type="button"
+          class="py-3 px-4 rounded-2xl bg-slate-900 text-white text-sm font-bold shadow-2xs active:scale-[0.98]">
+          Berikutnya →
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: LAPORAN & EXPORT FORM EXCEL ==================== -->
+    <section id="view-reports" class="hidden space-y-4">
+
+      <!-- Primary Excel Form Export Card -->
+      <div class="rounded-2xl bg-gradient-to-br from-emerald-700 to-teal-800 text-white p-4 sm:p-5 shadow-md space-y-3">
+        <div class="flex items-start justify-between gap-3">
+          <div>
+            <div class="text-[10px] font-bold uppercase tracking-widest text-emerald-200">Ekspor Formulir Resmi</div>
+            <h2 class="text-base sm:text-lg font-extrabold mt-0.5">Export Form TBM ke Excel (.xlsx)</h2>
+            <p class="text-xs text-emerald-100 mt-1">
+              Menghasilkan file Excel berformat formulir standar pabrik: kop mesin, seluruh 53 item, warna status OK/Abnormal, catatan, KPI, dan kolom tanda tangan Operator &amp; Supervisor.
+            </p>
+          </div>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 pt-1">
+          <button id="btn-export-xlsx-main" type="button"
+            class="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-white text-emerald-800 hover:bg-emerald-50 text-xs sm:text-sm font-extrabold shadow-sm transition-colors">
+            ⬇ Unduh Form Excel (.xlsx)
+          </button>
+          <button id="btn-export-csv" type="button"
+            class="px-3.5 py-2.5 rounded-xl bg-emerald-900/50 hover:bg-emerald-900/70 border border-emerald-400/30 text-white text-xs font-bold transition-colors">
+            Unduh CSV Mentah
+          </button>
+          <button id="btn-load-demo" type="button"
+            class="px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white text-xs font-bold transition-colors">
+            Muat Contoh Data
+          </button>
+        </div>
+      </div>
+
+      <!-- KPI Summary -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+          <div class="text-[11px] text-slate-500 font-medium">Total Batch Submit</div>
+          <div id="kpi-reports" class="text-2xl font-extrabold text-slate-900 mt-0.5">0</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+          <div class="text-[11px] text-slate-500 font-medium">Progres Minggu Ini</div>
+          <div id="kpi-compliance" class="text-2xl font-extrabold text-blue-700 mt-0.5">0%</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+          <div class="text-[11px] text-slate-500 font-medium">Kelengkapan Foto</div>
+          <div id="kpi-photo-rate" class="text-2xl font-extrabold text-emerald-600 mt-0.5">0%</div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-3.5 shadow-2xs">
+          <div class="text-[11px] text-slate-500 font-medium">Temuan Abnormal</div>
+          <div id="kpi-abnormal" class="text-2xl font-extrabold text-rose-600 mt-0.5">0</div>
+        </div>
+      </div>
+
+      <!-- Chart & Frequency Panel -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs">
+          <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3">Status Minggu Aktif</h3>
+          <div class="relative h-56">
+            <canvas id="eval-chart"></canvas>
+          </div>
+        </div>
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs flex flex-col">
+          <h3 class="text-xs font-bold uppercase tracking-wide text-slate-500 mb-3">Progres per Frekuensi</h3>
+          <div id="freq-breakdown" class="space-y-3 flex-1 flex flex-col justify-center"></div>
+        </div>
+      </div>
+
+      <!-- History List -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-2xs overflow-hidden">
+        <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between gap-2">
+          <div>
+            <h3 class="text-sm font-bold text-slate-900">Riwayat Submit Offline &amp; Online</h3>
+            <p id="history-count-label" class="text-[11px] text-slate-500">0 laporan tersimpan di perangkat</p>
+          </div>
+          <button id="btn-clear-reports" type="button"
+            class="px-2.5 py-1.5 rounded-lg border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-bold">
+            Reset Data
+          </button>
+        </div>
+        <div id="report-history-list" class="divide-y divide-slate-100"></div>
+      </div>
+
+    </section>
+
+    <!-- ==================== TAB 4: QR MESIN, OFFLINE & SYNC SHEETS ==================== -->
+    <section id="view-sync" class="hidden space-y-4">
+
+      <!-- Offline & Google Sheets Sync Panel -->
+      <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3.5">
+        <div class="flex items-start justify-between gap-2">
+          <div>
+            <h2 class="text-base font-extrabold text-slate-900">Sinkronisasi Offline &amp; Google Sheets</h2>
+            <p class="text-xs text-slate-500 mt-0.5">Saat offline, laporan &amp; foto aman di memori HP (IndexedDB). Begitu ada sinyal, klik Sinkronkan Antrean.</p>
+          </div>
+          <a href="https://docs.google.com/spreadsheets/d/1CHfF55Rwz6TE82O8I8Jrsn6Gz1uvhudEQetiBb5JYWo/edit" target="_blank" rel="noopener noreferrer"
+            class="shrink-0 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs font-bold hover:bg-emerald-100">
+            Buka Sheets ↗
+          </a>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5">
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+            <div class="text-[11px] text-slate-500">Antrean Belum Terkirim</div>
+            <div id="sync-pending-count" class="text-xl font-extrabold text-amber-600 mt-0.5">0 laporan</div>
+          </div>
+          <div class="rounded-xl bg-slate-50 border border-slate-200 p-3">
+            <div class="text-[11px] text-slate-500">Status Penyimpanan HP</div>
+            <div id="storage-engine-label" class="text-sm font-extrabold text-emerald-700 mt-1">IndexedDB Aktif</div>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <label for="sheets-webapp-url" class="block text-xs font-bold text-slate-700">URL Web App Google Apps Script (Opsional untuk Auto-Sync)</label>
+          <div class="flex flex-col sm:flex-row gap-2">
+            <input id="sheets-webapp-url" type="url" placeholder="https://script.google.com/macros/s/.../exec"
+              class="flex-1 px-3 py-2 rounded-xl border border-slate-300 bg-white font-mono text-xs focus:outline-none focus:ring-2 focus:ring-blue-500" />
+            <button id="btn-save-sheets-url" type="button"
+              class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-bold shrink-0">
+              Simpan URL
+            </button>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
+          <button id="btn-push-queue" type="button"
+            class="py-2.5 px-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold">
+            ↑ Kirim Antrean Offline
+          </button>
+          <button id="btn-pull-sheets" type="button"
+            class="py-2.5 px-3 rounded-xl border border-emerald-300 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 text-xs font-bold">
+            ↓ Tarik Data dari Sheets
+          </button>
+        </div>
+      </div>
+
+      <!-- Printable QR Code Card -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+        <div id="qr-print-card" class="bg-white rounded-2xl border-2 border-slate-900 p-5 shadow-2xs text-center space-y-3">
+          <div class="bg-gradient-to-r from-slate-900 to-blue-950 text-white rounded-xl py-2.5 px-3">
+            <div class="text-[10px] font-semibold uppercase tracking-widest text-sky-300">TBM Offline App • F35E-24T</div>
+            <div class="text-sm font-extrabold mt-0.5">SIDEL ROLLQUATTRO F35E (24T)</div>
+          </div>
+          <div class="py-1 flex flex-col items-center">
+            <div id="qr-code-box" class="p-2 bg-white border border-slate-200 rounded-2xl inline-flex items-center justify-center"></div>
+            <div id="qr-target-label" class="text-xs font-mono font-semibold text-slate-700 mt-2">Scan → Buka / Install ke Layar Utama</div>
+          </div>
+          <div class="bg-slate-50 rounded-xl p-2.5 text-left border border-slate-200 text-[11px] text-slate-600 space-y-1">
+            <div>1. Scan QR pakai kamera HP</div>
+            <div>2. Ketuk <strong>Tambahkan ke Layar Utama</strong> agar bisa dipakai <strong>Offline</strong></div>
+            <div>3. Kerjakan list &amp; foto bukti langsung dari aplikasi</div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-2xs space-y-3">
+          <h3 class="text-sm font-extrabold text-slate-900">Pengaturan QR Mesin</h3>
+          <div>
+            <label for="qr-base-url" class="block text-xs font-semibold text-slate-700 mb-1">URL Aplikasi PWA (GitHub Pages / Sites)</label>
+            <input id="qr-base-url" type="url" value="https://sites.google.com/view/mtc-plan-label-l3/full-page-embed"
+              class="w-full text-xs px-3 py-2 rounded-xl border border-slate-300 font-mono focus:outline-none focus:ring-2 focus:ring-blue-500" />
+          </div>
+          <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200">
+            <div class="text-[10px] font-semibold uppercase text-slate-400">Link Tertanam</div>
+            <div id="qr-full-url" class="text-xs font-mono text-blue-700 break-all mt-0.5"></div>
+          </div>
+          <div class="grid grid-cols-3 gap-2">
+            <button id="btn-download-qr-png" type="button" class="py-2 px-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold">Unduh PNG</button>
+            <button id="btn-print-qr" type="button" class="py-2 px-2 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-bold">Cetak QR</button>
+            <button id="btn-copy-qr-url" type="button" class="py-2 px-2 rounded-xl border border-slate-300 bg-white text-slate-800 text-xs font-bold">Salin Link</button>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- Native-Style Bottom Tab Navigation -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-white/95 backdrop-blur-md border-t border-slate-200 shadow-lg safe-pb" role="tablist">
+    <div class="max-w-3xl mx-auto grid grid-cols-4 h-16">
+      <button id="nav-tasks" type="button" data-tab="tasks"
+        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-blue-700 font-bold">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="text-[11px]">Tugas</span>
+      </button>
+      <button id="nav-focus" type="button" data-tab="focus"
+        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-slate-500 font-medium">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <span class="text-[11px]">Mode Fokus</span>
+      </button>
+      <button id="nav-reports" type="button" data-tab="reports"
+        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-slate-500 font-medium relative">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+        <span class="text-[11px]">Form Excel</span>
+        <span id="nav-report-badge" class="hidden absolute top-1.5 right-4 sm:right-8 px-1.5 py-0.2 rounded-full bg-blue-600 text-white text-[9px] font-bold">0</span>
+      </button>
+      <button id="nav-sync" type="button" data-tab="sync"
+        class="bottom-tab flex flex-col items-center justify-center gap-0.5 text-slate-500 font-medium">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+        <span class="text-[11px]">QR &amp; Sync</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Submit Confirmation Modal -->
+  <div id="modal-submit" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <h3 class="text-base font-extrabold text-slate-900">Simpan &amp; Kunci Pengerjaan</h3>
+          <p id="modal-submit-subtitle" class="text-xs text-slate-500 mt-0.5"></p>
+        </div>
+        <button id="btn-close-submit" type="button" class="text-slate-400 hover:text-slate-600 p-1">✕</button>
+      </div>
+      <div id="modal-submit-summary" class="bg-slate-50 rounded-xl p-3.5 text-xs space-y-1.5 border border-slate-200"></div>
+      <div id="modal-submit-note" class="bg-blue-50 border border-blue-200 text-blue-800 rounded-xl p-3 text-xs"></div>
+      <div class="flex justify-end gap-2">
+        <button id="btn-cancel-submit" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">Cek Lagi</button>
+        <button id="btn-confirm-submit" type="button" class="px-4 py-2 rounded-xl bg-blue-700 hover:bg-blue-800 text-white text-xs font-extrabold">Simpan Sekarang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Unlock / Delete Previous Item Modal -->
+  <div id="modal-unlock" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-xl space-y-4">
+      <h3 class="text-base font-extrabold text-slate-900">Hapus Data Sebelumnya?</h3>
+      <p id="modal-unlock-desc" class="text-xs text-slate-600 leading-relaxed"></p>
+      <div class="flex justify-end gap-2">
+        <button id="btn-cancel-unlock" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">Batal</button>
+        <button id="btn-confirm-unlock" type="button" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-extrabold">Ya, Hapus &amp; Isi Ulang</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Report Detail Modal -->
+  <div id="modal-detail" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[86vh] flex flex-col shadow-xl overflow-hidden">
+      <div class="px-4 py-3.5 border-b border-slate-200 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h3 id="detail-title" class="text-sm font-extrabold text-slate-900 truncate">Detail Batch</h3>
+          <p id="detail-meta" class="text-xs text-slate-500 truncate"></p>
+        </div>
+        <button id="btn-close-detail" type="button" class="px-3 py-1 rounded-lg bg-slate-100 text-slate-700 text-xs font-bold">Tutup</button>
+      </div>
+      <div id="detail-body" class="p-3.5 overflow-y-auto space-y-2 flex-1"></div>
+    </div>
+  </div>
+
+  <!-- Reset Confirmation Modal -->
+  <div id="modal-reset" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-xl space-y-4">
+      <h3 class="text-base font-extrabold text-slate-900">Reset Semua Data Lokal?</h3>
+      <p class="text-xs text-slate-600">Semua riwayat pengerjaan dan foto di perangkat ini akan dihapus. Master 53 tugas tetap aman.</p>
+      <div class="flex justify-end gap-2">
+        <button id="btn-cancel-reset" type="button" class="px-4 py-2 rounded-xl border border-slate-300 text-xs font-bold text-slate-700">Batal</button>
+        <button id="btn-confirm-reset" type="button" class="px-4 py-2 rounded-xl bg-rose-600 text-white text-xs font-extrabold">Hapus Semua</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Photo Lightbox -->
+  <div id="modal-lightbox" class="hidden fixed inset-0 z-[60] bg-slate-950/92 flex flex-col items-center justify-center p-4">
+    <button id="btn-close-lightbox" type="button" class="self-end mb-2 px-3 py-1.5 rounded-lg bg-white/15 text-white text-xs font-bold">Tutup ✕</button>
+    <img id="lightbox-img" src="" alt="Bukti Foto" class="max-w-full max-h-[78vh] rounded-xl object-contain" />
+    <p id="lightbox-caption" class="text-xs text-slate-300 mt-3 text-center"></p>
+  </div>
+
+  <!-- Toast -->
+  <div id="toast" class="hidden fixed top-16 left-1/2 -translate-x-1/2 z-[70] px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-bold shadow-xl text-center max-w-[90vw]"></div>
+
+  <script>
+    const TBM_DATA = {"weeks": ["W1", "W2", "W3", "W4", "W5", "W6", "W7", "W8", "W9", "W10", "W11", "W12", "W13", "W14", "W15", "W16", "W17", "W18", "W19", "W20", "W21", "W22", "W23", "W24", "W25", "W26", "W27", "W28", "W29", "W30", "W31", "W32", "W33", "W34", "W35", "W36", "W37", "W38", "W39", "W40", "W41", "W42", "W43", "W44", "W45", "W46", "W47", "W48", "W49", "W50", "W51", "W52"], "hours": [125, 250, 375, 500, 625, 750, 875, 1000, 1125, 1250, 1375, 1500, 1625, 1750, 1875, 2000, 2125, 2250, 2375, 2500, 2625, 2750, 2875, 3000, 3125, 3250, 3375, 3500, 3625, 3750, 3875, 4000, 4125, 4250, 4375, 4500, 4625, 4750, 4875, 5000, 5125, 5250, 5375, 5500, 5625, 5750, 5875, 6000, 6125, 6250, 6375, 6500], "tasks": [{"no": 1, "sop": "AM-L0001", "ref": "MAINL0232 / F35E-M2 (Monthly)", "task": "[Monthly] Jacks: lubricating stem", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 2, "sop": "AM-L0002", "ref": "MAINL3079 / F35E-D1 / W3 (Weekly)", "task": "[Weekly] Pneumatic system: filter inspection and cleaning", "machineStatus": "OFF (Depressurized)", "duration": 12, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 3, "sop": "AM-L0004", "ref": "MAINL3173 / F35E-D2 (Weekly)", "task": "[Weekly] Starwheels and counterstarwheels: cleaning and checking the starwheels", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 6, "sop": "AM-L0007", "ref": "MAINL1078 / F35E-W1 (Weekly)", "task": "[Weekly] Whole machine: Cleaning all surfaces", "machineStatus": "OFF (Stopped)", "duration": 20, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 7, "sop": "AM-L0008", "ref": "MAIN10495 / F35E-W1 (Monthly)", "task": "[Monthly] Plates: Pad inspection and cleaning", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 10, "sop": "AM-L0016", "ref": "MAINL0231 / F35E-W1 (Weekly)", "task": "[Weekly] Jacks: Checking the heads", "machineStatus": "OFF (Stopped)", "duration": 24, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 12, "sop": "AM-L0021", "ref": "MAINL0253 / F35E-S2 (Daily / Shift)", "task": "[Daily] Cutter roller: Clean external surfaces", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 13, "sop": "AM-L0022", "ref": "MAINL1091 / F35E-S1 (Daily)", "task": "[Daily] Glue roller: clean out label debris", "machineStatus": "OFF (Stopped - Hot Surface)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 14, "sop": "AM-L0023", "ref": "MAINL1110 / F35E-W1 (Weekly)", "task": "[Weekly] Photocells: Clean lens surfaces", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 15, "sop": "AM-L0026", "ref": "MAINL1072 / F35E-M1 (Monthly)", "task": "[Monthly] Glue tank: Clean the filter", "machineStatus": "OFF (Hot Surface)", "duration": 15, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 16, "sop": "AM-L0027", "ref": "MAINL1075 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Glue tank: Empty tank", "machineStatus": "OFF (Hot Surface)", "duration": 30, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 17, "sop": "AM-L0028", "ref": "MAIN10487 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: Clean and inspect pads", "machineStatus": "OFF (Stopped)", "duration": 15, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 18, "sop": "AM-L0030", "ref": "MAIN10500 / F35E-M2 (Weekly)", "task": "[Weekly] Labelling station: Checking and cleaning all film guide rollers", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 19, "sop": "AM-L0031", "ref": "MAINL1107 / F35E-D1 (Weekly)", "task": "[Weekly] Pneumatic system: Inspect circuit", "machineStatus": "ON (Pressurized, Machine Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 21, "sop": "AM-L0033", "ref": "MAIN10493 / F35E-S2 / W3 (Weekly)", "task": "[Weekly] Cutter roller: Checking cutter shell cleaning and lubrication", "machineStatus": "OFF (Stopped)", "duration": 15, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 22, "sop": "AM-L0034", "ref": "MAINL0262 / F35E-W2 / W10a (Weekly)", "task": "[Weekly] Label feed unit: clean the pinch roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 23, "sop": "AM-L0035", "ref": "MAINL1089 / F35E-W2 (Weekly)", "task": "[Weekly] Label feed unit: inspect and clean feed roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 24, "sop": "AM-L0036", "ref": "MAIN10497 / Update Baru F25E (Weekly)", "task": "[Weekly] Web tracker: Check for excessive wear or play and clean", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 25, "sop": "AM-L0037", "ref": "MAINL0248 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Vacuum drum: clean and inspect internal vacuum tunnels", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 26, "sop": "AM-L0038", "ref": "MAINL1081 / F35E-D3 (Daily)", "task": "[Daily] Vacuum drum: cleaning and lubricating the valve plate", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 27, "sop": "AM-L0039", "ref": "MAINL0274 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Auto splicer: Checking the blades and vacuum pads", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 28, "sop": "AM-L0042", "ref": "MAIN10494 / F35E-M2 (Monthly)", "task": "[Monthly] Cutter roller: inspect vacuum distributor and connecting pipes", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 29, "sop": "AM-L0046", "ref": "MAINL0252 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Cutter roller: Disc pad for adjusting oscillating roller", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 30, "sop": "AM-L0047", "ref": "MAIN10496 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Notch reading photocell and oscillating roller: Adjustment screw", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 31, "sop": "AM-L0048", "ref": "MAINL3044 / F35E-W3 (Weekly)", "task": "[Weekly] Cutter roller: clean blow-off block and fixed blade", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 32, "sop": "AM-L0049", "ref": "MAIN11498 / Update Baru F25E (Weekly)", "task": "[Weekly] Auto splicer: Cleaning and checking the encoder", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 33, "sop": "AM-L0050", "ref": "MAIN12367 / F35E-Y1 (Weekly Check)", "task": "[Weekly] Cutter roller: check oil level and inspect magnetic caps", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 34, "sop": "AM-L0051", "ref": "MAIN10491 / F35E-W3 (Quarterly Deep)", "task": "[Quarterly] Cutter roller: clean and check the blow-off block", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 35, "sop": "AM-L0052", "ref": "MAINL0289 / F35E-W2 / W10a (Weekly)", "task": "[Weekly] Label feed unit: check the pinch roller", "machineStatus": "OFF (Stopped)", "duration": 8, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 36, "sop": "AM-L0053", "ref": "MAINL1086 / F35E-M2 (Monthly)", "task": "[Monthly] Cutter roller: inspect static and rotary blade", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 37, "sop": "AM-L0064", "ref": "MAINL3108 / F35E-M2 (Monthly)", "task": "[Monthly] Labelling station: lubricate all film guide rollers", "machineStatus": "OFF (Stopped)", "duration": 2, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 38, "sop": "AM-L0065", "ref": "MAINL3159 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: checking solvent level", "machineStatus": "OFF (Stopped)", "duration": 1, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 39, "sop": "AM-L0066", "ref": "MAINL3158 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: checking residual solvent level", "machineStatus": "OFF (Stopped)", "duration": 1, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 40, "sop": "AM-L0070", "ref": "MAINL3157 / Update Modul Auto-Clean (Weekly)", "task": "[Weekly] Automatic cleaning system: check the filter", "machineStatus": "OFF (Stopped)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 41, "sop": "AM-L0083", "ref": "MAIN10508 / F35E-M1 / Task B64 (Monthly)", "task": "[Monthly] Glue roller: checking glue scraper wear", "machineStatus": "OFF (Hot Surface)", "duration": 5, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 42, "sop": "AM-L0146", "ref": "MAIN10972 / Update Baru F25E (Quarterly)", "task": "[Quarterly] Cleaning the steering column containing profiles", "machineStatus": "OFF (ADJUST Mode)", "duration": 30, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 43, "sop": "AM-L0148", "ref": "MAIN11356 / Update Baru F25E (Weekly)", "task": "[Weekly] Checking the safety valve of the vacuum system", "machineStatus": "ON (Vacuum Pump Running)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 44, "sop": "AM-L0151", "ref": "MAIN10488 / F35E-W3 (Weekly)", "task": "[Weekly] Cleaning the filter of the vacuum system safety valve", "machineStatus": "ON (Vacuum Pump Disabled)", "duration": 5, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 45, "sop": "AM-L0155", "ref": "MAINL1070 / F35E-W3 (Weekly)", "task": "[Weekly] Vacuum system: Cleaning filters", "machineStatus": "ON (Vacuum Pump Disabled)", "duration": 10, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 46, "sop": "AM-L0161", "ref": "MAIN11321 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: bearing lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 47, "sop": "AM-L0163", "ref": "MAIN11323 / F35E-W1 (Weekly)", "task": "[Weekly] Platform belt transmission lubrication system", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 48, "sop": "AM-L0166", "ref": "MAIN11325 / F35E-M2 (Monthly)", "task": "[Monthly] Reel stand lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 49, "sop": "AM-L0167", "ref": "MAIN11326 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Glue roller: bearing lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 50, "sop": "AM-L0168", "ref": "MAIN11327 / F35E-2W1 (Fortnightly)", "task": "[Fortnightly (2 Weeks)] Main shaft grooved carousel greasing", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1]}, {"no": 51, "sop": "AM-L0169", "ref": "MAIN11223 / F35E-M1 (Monthly)", "task": "[Monthly] Vacuum drum: checking glue distribution", "machineStatus": "ON (Adjust / Test Mode)", "duration": 2, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 53, "sop": "AM-L0172", "ref": "MAIN12302 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Vacuum drum: cleaning and lubricating the valve plate", "machineStatus": "OFF (Stopped)", "duration": 10, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 54, "sop": "AM-L0173", "ref": "MAIN12303 / F35E-3M1 (Quarterly)", "task": "[Quarterly] Base gears: lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 55, "sop": "AM-L0174", "ref": "MAIN12304 / F35E-M1 (Monthly)", "task": "[Monthly] Glue roller: checking and cleaning the label extraction blade", "machineStatus": "OFF (Hot Surface)", "duration": 10, "schedule": [0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1]}, {"no": 56, "sop": "AM-L0179", "ref": "MAIN12346 / F35E-W1 (Weekly)", "task": "[Weekly] Glue roller: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 57, "sop": "AM-L0180", "ref": "MAIN12347 / F35E-W1 (Weekly)", "task": "[Weekly] Cutter roller: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 58, "sop": "AM-L0181", "ref": "MAIN12348 / F35E-W1 (Weekly)", "task": "[Weekly] Vacuum drum: greasing the transmission", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}, {"no": 59, "sop": "AM-L0182", "ref": "MAIN12349 / F35E-2W1 (Fortnightly)", "task": "[Fortnightly (2 Weeks)] Labelling station: lubricating the adjustment screw", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 1, 1, 1, 1]}, {"no": 60, "sop": "AM-L0183", "ref": "MAIN12350 / F35E-W1 (Weekly)", "task": "[Weekly] Centralized lubrication", "machineStatus": "OFF (Stopped)", "duration": 3, "schedule": [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]}]};
+
+    // ==================== INDEXEDDB OFFLINE STORAGE ENGINE ====================
+    const DB_NAME = 'TBM_Sidel_F35E_OfflineDB';
+    const DB_STORE = 'kv_store';
+    let idbInstance = null;
+
+    function initIndexedDB() {
+      return new Promise((resolve) => {
+        try {
+          if (!window.indexedDB) { resolve(false); return; }
+          const req = indexedDB.open(DB_NAME, 1);
+          req.onupgradeneeded = (e) => {
+            const db = e.target.result;
+            if (!db.objectStoreNames.contains(DB_STORE)) db.createObjectStore(DB_STORE);
+          };
+          req.onsuccess = (e) => { idbInstance = e.target.result; resolve(true); };
+          req.onerror = () => resolve(false);
+        } catch (err) {
+          resolve(false);
+        }
+      });
+    }
+
+    function dbGet(key, fallback) {
+      return new Promise((resolve) => {
+        if (idbInstance) {
+          try {
+            const tx = idbInstance.transaction(DB_STORE, 'readonly');
+            const req = tx.objectStore(DB_STORE).get(key);
+            req.onsuccess = () => resolve(req.result !== undefined ? req.result : fallback);
+            req.onerror = () => resolve(fallback);
+            return;
+          } catch (e) {}
+        }
+        try {
+          const raw = localStorage.getItem('tbm_pwa_' + key);
+          resolve(raw ? JSON.parse(raw) : fallback);
+        } catch (e) { resolve(fallback); }
+      });
+    }
+
+    function dbSet(key, val) {
+      if (idbInstance) {
+        try {
+          const tx = idbInstance.transaction(DB_STORE, 'readwrite');
+          tx.objectStore(DB_STORE).put(val, key);
+          return;
+        } catch (e) {}
+      }
+      try { localStorage.setItem('tbm_pwa_' + key, JSON.stringify(val)); } catch (e) {}
+    }
+
+    // ==================== APP STATE ====================
+    const state = {
+      activeTab: 'tasks',
+      weekIndex: 47, // W48
+      operatorName: '',
+      shift: 'Shift 1 (Pagi)',
+      scopeMode: 'all',
+      filter: 'all',
+      searchQuery: '',
+      hideSubmitted: false,
+      focusIndex: 0,
+      draftsByWeek: {},
+      reports: [],
+      sheetsUrl: '',
+      pendingUnlockSop: null,
+      evalChart: null
+    };
+
+    function showToast(msg) {
+      const el = document.getElementById('toast');
+      el.textContent = msg;
+      el.classList.remove('hidden');
+      clearTimeout(showToast._t);
+      showToast._t = setTimeout(() => el.classList.add('hidden'), 2600);
+    }
+
+    function escapeHtml(str) {
+      return String(str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function getFreqInfo(taskName) {
+      if (taskName.startsWith('[Daily]')) return { key: 'Daily', label: 'Daily', cls: 'bg-sky-50 text-sky-700 border-sky-200' };
+      if (taskName.startsWith('[Weekly]')) return { key: 'Weekly', label: 'Weekly', cls: 'bg-indigo-50 text-indigo-700 border-indigo-200' };
+      if (taskName.startsWith('[Fortnightly')) return { key: 'Fortnightly', label: '2 Mingguan', cls: 'bg-violet-50 text-violet-700 border-violet-200' };
+      if (taskName.startsWith('[Monthly]')) return { key: 'Monthly', label: 'Monthly', cls: 'bg-amber-50 text-amber-700 border-amber-200' };
+      if (taskName.startsWith('[Quarterly]')) return { key: 'Quarterly', label: 'Quarterly', cls: 'bg-rose-50 text-rose-700 border-rose-200' };
+      return { key: 'Other', label: 'TBM', cls: 'bg-slate-100 text-slate-700 border-slate-200' };
+    }
+
+    function cleanTitle(taskName) { return taskName.replace(/^\[[^\]]+\]\s*/, ''); }
+    function getWeekCode() { return TBM_DATA.weeks[state.weekIndex] || 'W48'; }
+    function getScheduledTasks(idx) { return TBM_DATA.tasks.filter(t => t.schedule[idx] === 1); }
+    function getActiveTasks(idx) { return state.scopeMode === 'scheduled' ? getScheduledTasks(idx) : TBM_DATA.tasks; }
+
+    function getWeekDraft(wk) {
+      if (!state.draftsByWeek[wk]) state.draftsByWeek[wk] = {};
+      return state.draftsByWeek[wk];
+    }
+    function getItemDraft(wk, sop) {
+      const wd = getWeekDraft(wk);
+      if (!wd[sop]) wd[sop] = { status: 'pending', note: '', photoDataUrl: null, photoSizeKb: 0, showNote: false };
+      return wd[sop];
+    }
+
+    function getSubmittedMapForWeek(wk) {
+      const map = {};
+      for (let i = 0; i < state.reports.length; i++) {
+        const r = state.reports[i];
+        if (r.weekCode !== wk || !Array.isArray(r.items)) continue;
+        for (let j = 0; j < r.items.length; j++) {
+          const it = r.items[j];
+          if ((it.status === 'ok' || it.status === 'abnormal') && !map[it.sop]) {
+            map[it.sop] = {
+              reportId: r.id, operatorName: r.operatorName, shift: r.shift,
+              submittedAt: r.submittedAt, synced: Boolean(r.synced),
+              status: it.status, note: it.note || '',
+              photoDataUrl: it.photoDataUrl || null, photoDriveUrl: it.photoDriveUrl || '', photoSizeKb: it.photoSizeKb || 0
+            };
+          }
+        }
+      }
+      return map;
+    }
+
+    function saveProfile() {
+      dbSet('profile', {
+        operatorName: state.operatorName, shift: state.shift,
+        weekIndex: state.weekIndex, scopeMode: state.scopeMode, hideSubmitted: state.hideSubmitted
+      });
+    }
+
+    function updateNetworkUI() {
+      const online = navigator.onLine !== false;
+      const dot = document.getElementById('net-status-dot');
+      const txt = document.getElementById('net-status-text');
+      const engine = idbInstance ? 'IndexedDB' : 'Lokal';
+      if (online) {
+        dot.className = 'w-2 h-2 rounded-full bg-emerald-400 shrink-0';
+        txt.textContent = `Online • Siap Offline (${engine})`;
+      } else {
+        dot.className = 'w-2 h-2 rounded-full bg-amber-400 shrink-0';
+        txt.textContent = `Mode Offline • Tersimpan di HP (${engine})`;
+      }
+      document.getElementById('storage-engine-label').textContent = idbInstance ? 'IndexedDB (Kapasitas Besar)' : 'LocalStorage Fallback';
+    }
+
+    function compressImage(file, maxWidth, quality) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const img = new Image();
+          img.onload = () => {
+            let w = img.width, h = img.height;
+            if (w > maxWidth) { h = Math.round((h * maxWidth) / w); w = maxWidth; }
+            const c = document.createElement('canvas');
+            c.width = w; c.height = h;
+            c.getContext('2d').drawImage(img, 0, 0, w, h);
+            const dataUrl = c.toDataURL('image/jpeg', quality);
+            const sizeKb = Math.max(1, Math.round((dataUrl.length * 3) / 4 / 1024));
+            resolve({ dataUrl, sizeKb });
+          };
+          img.onerror = reject;
+          img.src = ev.target.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    // ==================== RENDER: TASKS TAB ====================
+    function renderTasksTab() {
+      const wk = getWeekCode();
+      const schedTasks = getScheduledTasks(state.weekIndex);
+      const tasks = getActiveTasks(state.weekIndex);
+      const subMap = getSubmittedMapForWeek(wk);
+      const draft = getWeekDraft(wk);
+
+      const btnAll = document.getElementById('btn-scope-all');
+      const btnSched = document.getElementById('btn-scope-scheduled');
+      btnAll.textContent = `Semua (${TBM_DATA.tasks.length})`;
+      btnSched.textContent = `Jadwal ${wk} (${schedTasks.length})`;
+      btnAll.className = state.scopeMode === 'all' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
+      btnSched.className = state.scopeMode === 'scheduled' ? 'px-2.5 py-1 text-[11px] font-bold rounded-md bg-white text-blue-700 shadow-2xs' : 'px-2.5 py-1 text-[11px] font-bold rounded-md text-slate-600';
+
+      let subCount = 0, draftCount = 0, draftPhotos = 0, pendCount = 0;
+      tasks.forEach(t => {
+        if (subMap[t.sop]) { subCount++; }
+        else {
+          const d = draft[t.sop];
+          if (d && (d.status === 'ok' || d.status === 'abnormal')) draftCount++;
+          else pendCount++;
+          if (d && d.photoDataUrl) draftPhotos++;
+        }
+      });
+
+      const total = tasks.length;
+      const pctSub = total ? Math.round((subCount / total) * 100) : 0;
+      const pctDraft = total ? Math.round((draftCount / total) * 100) : 0;
+      const pctAll = Math.min(100, pctSub + pctDraft);
+
+      document.getElementById('stat-total').textContent = total;
+      document.getElementById('stat-submitted').textContent = subCount;
+      document.getElementById('stat-draft').textContent = draftCount;
+      document.getElementById('stat-pending').textContent = pendCount;
+      document.getElementById('hero-pct-label').textContent = `Progres: ${subCount + draftCount}/${total} (${pctAll}%)`;
+      document.getElementById('hero-hours-label').textContent = `${wk} • ${(TBM_DATA.hours[state.weekIndex] || 0).toLocaleString('id-ID')} jam`;
+      document.getElementById('bar-submitted').style.width = `${pctSub}%`;
+      document.getElementById('bar-draft').style.width = `${pctDraft}%`;
+
+      const unsyncedCount = state.reports.filter(r => !r.synced).length;
+      const qBadge = document.getElementById('sync-queue-badge');
+      if (unsyncedCount > 0) {
+        qBadge.textContent = `${unsyncedCount} antre sync`;
+        qBadge.classList.remove('hidden');
+      } else {
+        qBadge.classList.add('hidden');
+      }
+
+      // Floating draft submit bar
+      const floatBar = document.getElementById('draft-submit-bar');
+      if (draftCount > 0 && state.activeTab === 'tasks') {
+        floatBar.classList.remove('hidden');
+        document.getElementById('floating-draft-title').textContent = `${draftCount} item baru siap disimpan`;
+        document.getElementById('floating-draft-sub').textContent = `${draftPhotos} foto bukti • Tersimpan aman offline`;
+      } else {
+        floatBar.classList.add('hidden');
+      }
+
+      const q = state.searchQuery.trim().toLowerCase();
+      const filtered = tasks.filter(t => {
+        const sub = subMap[t.sop];
+        const d = draft[t.sop] || { status: 'pending' };
+        const eff = sub ? sub.status : d.status;
+        if (state.hideSubmitted && sub) return false;
+        if (state.filter === 'pending' && (sub || d.status !== 'pending')) return false;
+        if (state.filter === 'submitted' && !sub) return false;
+        if (state.filter === 'ok' && eff !== 'ok') return false;
+        if (state.filter === 'abnormal' && eff !== 'abnormal') return false;
+        if (q && !`${t.no} ${t.sop} ${t.ref} ${t.task}`.toLowerCase().includes(q)) return false;
+        return true;
+      });
+
+      const listEl = document.getElementById('task-list');
+      if (filtered.length === 0) {
+        listEl.innerHTML = `<div class="bg-white rounded-2xl border border-slate-200 p-8 text-center text-xs text-slate-500">Tidak ada tugas pada filter ini.</div>`;
+        return;
+      }
+
+      listEl.innerHTML = filtered.map(t => {
+        const masterIdx = TBM_DATA.tasks.indexOf(t) + 1;
+        const sub = subMap[t.sop];
+        const freq = getFreqInfo(t.task);
+
+        if (sub) {
+          const isAbn = sub.status === 'abnormal';
+          const accent = isAbn ? 'border-rose-200 border-l-rose-500 bg-rose-50/30' : 'border-emerald-200 border-l-emerald-500 bg-emerald-50/25';
+          const pill = isAbn
+            ? '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-rose-600 text-white">⚠ TERISI • ABNORMAL</span>'
+            : '<span class="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-emerald-600 text-white">✓ SUDAH TERISI</span>';
+          return `
+            <article class="rounded-2xl border border-l-4 ${accent} p-3.5 shadow-2xs" data-sop="${escapeHtml(t.sop)}">
+              <div class="flex flex-wrap items-center justify-between gap-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-xs font-extrabold text-slate-400">#${masterIdx}</span>
+                  <span class="text-xs font-mono font-bold text-slate-800 bg-white border border-slate-200 px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${freq.cls}">${freq.label}</span>
+                </div>
+                ${pill}
+              </div>
+              <h3 class="text-sm font-bold text-slate-800 mt-2 leading-snug">${escapeHtml(cleanTitle(t.task))}</h3>
+              <div class="mt-2.5 p-2.5 rounded-xl bg-white border border-slate-200/80 flex flex-wrap items-center justify-between gap-2">
+                <div class="min-w-0 flex-1 text-[11px] text-slate-600">
+                  <div>🔒 <strong>${escapeHtml(sub.operatorName)}</strong> (${escapeHtml(sub.shift)}) • ${escapeHtml(sub.submittedAt)}</div>
+                  ${sub.note ? `<div class="text-rose-700 mt-1 font-medium">Catatan: ${escapeHtml(sub.note)}</div>` : ''}
+                </div>
+                <div class="flex items-center gap-2 shrink-0">
+                  ${sub.photoDataUrl ? `<img src="${sub.photoDataUrl}" data-action="zoom-submitted" data-sop="${escapeHtml(t.sop)}" class="w-10 h-10 rounded-lg object-cover border border-slate-300 cursor-pointer" />` : ''}
+                  <button type="button" data-action="unlock" data-sop="${escapeHtml(t.sop)}"
+                    class="px-2.5 py-1.5 rounded-lg border border-rose-200 bg-white hover:bg-rose-50 text-rose-700 text-[11px] font-bold">
+                    Hapus &amp; Isi Ulang
+                  </button>
+                </div>
+              </div>
+            </article>`;
+        }
+
+        const d = getItemDraft(wk, t.sop);
+        const filled = d.status === 'ok' || d.status === 'abnormal';
+        const accent = d.status === 'ok' ? 'border-blue-200 border-l-blue-600 bg-white' : d.status === 'abnormal' ? 'border-rose-300 border-l-rose-600 bg-rose-50/20' : 'border-slate-200 border-l-slate-300 bg-white';
+        const okCls = d.status === 'ok' ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white text-slate-700 border-slate-300';
+        const abnCls = d.status === 'abnormal' ? 'bg-rose-600 text-white border-rose-600' : 'bg-white text-slate-700 border-slate-300';
+        const showNote = d.showNote || d.status === 'abnormal' || Boolean(d.note);
+
+        return `
+          <article class="rounded-2xl border border-l-4 ${accent} p-3.5 shadow-2xs" data-sop="${escapeHtml(t.sop)}" data-pending="${!filled}">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex flex-wrap items-center gap-1.5">
+                <span class="text-xs font-extrabold text-slate-400">#${masterIdx}</span>
+                <span class="text-xs font-mono font-bold text-slate-800 bg-slate-100 px-1.5 py-0.5 rounded">${escapeHtml(t.sop)}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${freq.cls}">${freq.label}</span>
+                ${filled ? '<span class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-sky-100 text-sky-800">Draft</span>' : ''}
+              </div>
+              <span class="text-[11px] font-semibold text-slate-500">${t.duration} mnt</span>
+            </div>
+            <h3 class="text-sm font-bold text-slate-900 mt-1.5 leading-snug">${escapeHtml(cleanTitle(t.task))}</h3>
+            <div class="text-[11px] text-slate-500 mt-1">${escapeHtml(t.machineStatus)} • <span class="font-mono">${escapeHtml(t.ref)}</span></div>
+
+            <div class="mt-3 pt-2.5 border-t border-slate-100 flex flex-wrap gap-2">
+              <button type="button" data-action="set-ok" data-sop="${escapeHtml(t.sop)}"
+                class="flex-1 min-w-[84px] py-2.5 rounded-xl border text-xs font-extrabold ${okCls}">✓ OK</button>
+              <button type="button" data-action="set-abnormal" data-sop="${escapeHtml(t.sop)}"
+                class="flex-1 min-w-[96px] py-2.5 rounded-xl border text-xs font-extrabold ${abnCls}">⚠ Abnormal</button>
+              <label class="flex-1 min-w-[100px] py-2.5 px-2 rounded-xl border border-blue-200 bg-blue-50 text-blue-700 text-xs font-extrabold text-center cursor-pointer">
+                📷 ${d.photoDataUrl ? 'Ganti' : 'Foto'}
+                <input type="file" accept="image/*" capture="environment" data-action="upload-photo" data-sop="${escapeHtml(t.sop)}" class="hidden" />
+              </label>
+              <button type="button" data-action="toggle-note" data-sop="${escapeHtml(t.sop)}"
+                class="py-2.5 px-3 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 text-xs font-bold">✎</button>
+            </div>
+
+            ${d.photoDataUrl ? `
+              <div class="mt-2.5 flex items-center gap-2.5 p-2 rounded-xl bg-slate-50 border border-slate-200">
+                <img src="${d.photoDataUrl}" data-action="zoom-draft" data-sop="${escapeHtml(t.sop)}" class="w-12 h-12 rounded-lg object-cover border border-slate-300 cursor-pointer shrink-0" />
+                <div class="min-w-0 flex-1 text-[11px]">
+                  <div class="font-bold text-emerald-700">Foto bukti tersimpan</div>
+                  <div class="text-slate-500">~${d.photoSizeKb} KB (ringan)</div>
+                </div>
+                <button type="button" data-action="remove-photo" data-sop="${escapeHtml(t.sop)}" class="text-xs font-bold text-rose-600 px-2 py-1">Hapus</button>
+              </div>` : ''}
+
+            ${showNote ? `
+              <input type="text" data-action="edit-note" data-sop="${escapeHtml(t.sop)}" value="${escapeHtml(d.note)}"
+                placeholder="${d.status === 'abnormal' ? 'Jelaskan temuan abnormal...' : 'Catatan tambahan (opsional)...'}"
+                class="mt-2 w-full text-xs px-3 py-2 rounded-xl border ${d.status === 'abnormal' ? 'border-rose-300 bg-rose-50/40' : 'border-slate-200 bg-slate-50'} focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />` : ''}
+          </article>`;
+      }).join('');
+    }
+
+    // ==================== RENDER: FOCUS MODE (1-BY-1 CARD) ====================
+    function renderFocusTab() {
+      const tasks = getActiveTasks(state.weekIndex);
+      if (state.focusIndex >= tasks.length) state.focusIndex = 0;
+      if (state.focusIndex < 0) state.focusIndex = Math.max(0, tasks.length - 1);
+
+      const t = tasks[state.focusIndex];
+      const wk = getWeekCode();
+      const sub = getSubmittedMapForWeek(wk)[t.sop];
+      const d = getItemDraft(wk, t.sop);
+      const freq = getFreqInfo(t.task);
+
+      const container = document.getElementById('focus-card-container');
+      container.innerHTML = `
+        <div class="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm space-y-4">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-blue-700 bg-blue-50 px-3 py-1 rounded-full">Item ${state.focusIndex + 1} dari ${tasks.length}</span>
+            <span class="text-xs font-mono font-bold text-slate-600">${escapeHtml(t.sop)} • ${t.duration} mnt</span>
+          </div>
+
+          <div class="space-y-1.5">
+            <span class="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${freq.cls}">${freq.label}</span>
+            <h3 class="text-lg font-extrabold text-slate-900 leading-snug">${escapeHtml(cleanTitle(t.task))}</h3>
+            <div class="text-xs text-slate-500">Status Mesin: <strong>${escapeHtml(t.machineStatus)}</strong></div>
+            <div class="text-[11px] font-mono text-slate-400">Ref: ${escapeHtml(t.ref)}</div>
+          </div>
+
+          ${sub ? `
+            <div class="rounded-2xl bg-emerald-50 border border-emerald-200 p-4 space-y-2.5">
+              <div class="text-sm font-extrabold text-emerald-800">✓ SUDAH TERISI (${sub.status.toUpperCase()})</div>
+              <div class="text-xs text-emerald-700">Diisi oleh <strong>${escapeHtml(sub.operatorName)}</strong> (${escapeHtml(sub.shift)}) pada ${escapeHtml(sub.submittedAt)}</div>
+              ${sub.note ? `<div class="text-xs text-rose-700 bg-white p-2 rounded-lg">Catatan: ${escapeHtml(sub.note)}</div>` : ''}
+              <button type="button" data-focus-action="unlock" data-sop="${escapeHtml(t.sop)}"
+                class="w-full py-2.5 rounded-xl border border-rose-300 bg-white text-rose-700 text-xs font-extrabold">
+                Hapus Data Sebelumnya &amp; Isi Ulang
+              </button>
+            </div>
+          ` : `
+            <div class="grid grid-cols-2 gap-3 pt-1">
+              <button type="button" data-focus-action="set-ok" data-sop="${escapeHtml(t.sop)}"
+                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'ok' ? 'bg-emerald-600 border-emerald-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-800'}">
+                ✓ OK
+              </button>
+              <button type="button" data-focus-action="set-abnormal" data-sop="${escapeHtml(t.sop)}"
+                class="py-4 rounded-2xl border-2 text-base font-extrabold transition-all ${d.status === 'abnormal' ? 'bg-rose-600 border-rose-600 text-white shadow-md' : 'bg-white border-slate-200 text-slate-800'}">
+                ⚠ Abnormal
+              </button>
+            </div>
+
+            <label class="block w-full py-3.5 rounded-2xl border-2 border-dashed border-blue-300 bg-blue-50/70 hover:bg-blue-100 text-blue-800 text-sm font-extrabold text-center cursor-pointer">
+              📷 ${d.photoDataUrl ? 'Ambil Ulang Foto Bukti' : 'Ambil Foto Bukti (Kamera)'}
+              <input type="file" accept="image/*" capture="environment" data-focus-action="upload-photo" data-sop="${escapeHtml(t.sop)}" class="hidden" />
+            </label>
+
+            ${d.photoDataUrl ? `
+              <div class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                <img src="${d.photoDataUrl}" class="w-16 h-16 rounded-xl object-cover border border-slate-300" />
+                <div class="flex-1 text-xs">
+                  <div class="font-bold text-emerald-700">Foto siap (~${d.photoSizeKb} KB)</div>
+                  <button type="button" data-focus-action="remove-photo" data-sop="${escapeHtml(t.sop)}" class="text-rose-600 font-bold mt-1">Hapus Foto</button>
+                </div>
+              </div>` : ''}
+
+            <input type="text" data-focus-action="edit-note" data-sop="${escapeHtml(t.sop)}" value="${escapeHtml(d.note)}"
+              placeholder="Catatan temuan / keterangan (opsional)..."
+              class="w-full text-sm px-3.5 py-2.5 rounded-xl border border-slate-300 bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" />
+
+            <button type="button" data-focus-action="open-submit"
+              class="w-full py-3 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-700 text-white text-sm font-extrabold shadow-sm">
+              Simpan &amp; Submit Draft Sekarang
+            </button>
+          `}
+        </div>
+      `;
+    }
+
+    // ==================== RENDER: REPORTS & EXCEL FORM TAB ====================
+    function renderReportsTab() {
+      const wk = getWeekCode();
+      const tasks = TBM_DATA.tasks;
+      const subMap = getSubmittedMapForWeek(wk);
+
+      const badge = document.getElementById('nav-report-badge');
+      if (state.reports.length > 0) {
+        badge.textContent = state.reports.length;
+        badge.classList.remove('hidden');
+      } else {
+        badge.classList.add('hidden');
+      }
+
+      let ok = 0, abn = 0, pend = 0, photos = 0;
+      const freqStats = { Daily: { t: 0, d: 0 }, Weekly: { t: 0, d: 0 }, Fortnightly: { t: 0, d: 0 }, Monthly: { t: 0, d: 0 }, Quarterly: { t: 0, d: 0 } };
+      tasks.forEach(t => {
+        const fk = getFreqInfo(t.task).key;
+        if (freqStats[fk]) freqStats[fk].t++;
+        const s = subMap[t.sop];
+        if (s) {
+          if (s.status === 'ok') ok++;
+          if (s.status === 'abnormal') abn++;
+          if (s.photoDataUrl || s.photoDriveUrl) photos++;
+          if (freqStats[fk]) freqStats[fk].d++;
+        } else {
+          pend++;
+        }
+      });
+
+      const done = ok + abn;
+      const comp = tasks.length ? Math.round((done / tasks.length) * 100) : 0;
+      const photoRate = done ? Math.round((photos / done) * 100) : 0;
+
+      document.getElementById('kpi-reports').textContent = state.reports.length;
+      document.getElementById('kpi-compliance').textContent = `${comp}%`;
+      document.getElementById('kpi-photo-rate').textContent = `${photoRate}%`;
+      document.getElementById('kpi-abnormal').textContent = abn;
+      document.getElementById('history-count-label').textContent = `${state.reports.length} batch tersimpan di perangkat`;
+      document.getElementById('sync-pending-count').textContent = `${state.reports.filter(r => !r.synced).length} laporan`;
+
+      document.getElementById('freq-breakdown').innerHTML = Object.entries(freqStats).map(([k, v]) => {
+        const p = v.t ? Math.round((v.d / v.t) * 100) : 0;
+        return `
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="font-bold text-slate-700">${k}</span>
+              <span class="text-slate-500">${v.d}/${v.t} (${p}%)</span>
+            </div>
+            <div class="w-full h-2 bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-blue-600 rounded-full" style="width:${p}%"></div>
+            </div>
+          </div>`;
+      }).join('');
+
+      const canvas = document.getElementById('eval-chart');
+      if (state.evalChart) state.evalChart.destroy();
+      if (typeof Chart !== 'undefined') {
+        state.evalChart = new Chart(canvas, {
+          type: 'doughnut',
+          data: {
+            labels: ['OK', 'Abnormal', 'Belum Terisi'],
+            datasets: [{ data: [ok, abn, pend], backgroundColor: ['#10b981', '#e11d48', '#cbd5e1'], borderWidth: 0 }]
+          },
+          options: { responsive: true, maintainAspectRatio: false, cutout: '64%', plugins: { legend: { position: 'bottom', labels: { boxWidth: 12, font: { size: 11 } } } } }
+        });
+      }
+
+      const histEl = document.getElementById('report-history-list');
+      if (state.reports.length === 0) {
+        histEl.innerHTML = `<div class="p-6 text-center text-xs text-slate-500">Belum ada riwayat submit. Anda tetap bisa klik <strong>Unduh Form Excel (.xlsx)</strong> untuk melihat format formulir kosong/draft.</div>`;
+      } else {
+        histEl.innerHTML = state.reports.map(r => `
+          <div class="p-3.5 flex flex-wrap items-center justify-between gap-2 hover:bg-slate-50">
+            <div class="min-w-0">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span class="text-xs font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700">${escapeHtml(r.weekCode)}</span>
+                <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${r.synced ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}">${r.synced ? 'Terkirim Sheets ✓' : 'Antre Offline'}</span>
+                <span class="text-sm font-bold text-slate-900">${escapeHtml(r.operatorName)}</span>
+              </div>
+              <div class="text-[11px] text-slate-500 mt-0.5">${escapeHtml(r.shift)} • ${escapeHtml(r.submittedAt)} • ${r.completedCount} item (${r.photoCount} foto)</div>
+            </div>
+            <button type="button" data-action="open-detail" data-report-id="${escapeHtml(r.id)}"
+              class="px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-xs font-bold text-slate-700">Detail</button>
+          </div>`).join('');
+      }
+    }
+
+    // ==================== EXPORT FORMATTED EXCEL FORM (.XLSX) ====================
+    async function exportFormattedExcel() {
+      if (typeof ExcelJS === 'undefined') {
+        showToast('Library Excel sedang offline/belum termuat. Menggunakan ekspor CSV...');
+        exportReportsCsv();
+        return;
+      }
+      showToast('Menyiapkan Form Excel (.xlsx) resmi...');
+      try {
+        const wk = getWeekCode();
+        const runHours = TBM_DATA.hours[state.weekIndex] || 0;
+        const subMap = getSubmittedMapForWeek(wk);
+        const draft = getWeekDraft(wk);
+
+        const wb = new ExcelJS.Workbook();
+        wb.creator = 'TBM Tracker F35E';
+        wb.created = new Date();
+
+        // SHEET 1: FORMULIR RESMI TBM
+        const ws = wb.addWorksheet(`Form_TBM_${wk}`, {
+          pageSetup: { paperSize: 9, orientation: 'landscape', fitToPage: true, fitToWidth: 1, fitToHeight: 0 }
+        });
+
+        ws.columns = [
+          { width: 6 },  // A: No
+          { width: 13 }, // B: Kode SOP
+          { width: 26 }, // C: Ref
+          { width: 46 }, // D: Task
+          { width: 13 }, // E: Frekuensi
+          { width: 20 }, // F: Status Mesin
+          { width: 10 }, // G: Durasi
+          { width: 14 }, // H: Status Aktual
+          { width: 24 }, // I: Operator & Waktu
+          { width: 14 }, // J: Bukti Foto
+          { width: 32 }  // K: Catatan
+        ];
+
+        // Title Banner
+        ws.mergeCells('A1:K1');
+        const c1 = ws.getCell('A1');
+        c1.value = 'FORMULIR LAPORAN AKTUAL TIME-BASED MAINTENANCE (TBM)';
+        c1.font = { name: 'Calibri', size: 15, bold: true, color: { argb: 'FFFFFFFF' } };
+        c1.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF0F172A' } };
+        c1.alignment = { vertical: 'middle', horizontal: 'center' };
+        ws.getRow(1).height = 30;
+
+        ws.mergeCells('A2:K2');
+        const c2 = ws.getCell('A2');
+        c2.value = 'MESIN: SIDEL ROLLQUATTRO F35E (24T)   |   ID ASET: F35E-24T   |   AUTONOMOUS MAINTENANCE';
+        c2.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FF1E3A8A' } };
+        c2.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0F2FE' } };
+        c2.alignment = { vertical: 'middle', horizontal: 'center' };
+        ws.getRow(2).height = 20;
+
+        // Metadata Block
+        const todayStr = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+        const metaRows = [
+          ['Periode Minggu', `${wk} (${runHours.toLocaleString('id-ID')} Jam Operasi)`, '', 'Tanggal Cetak', todayStr],
+          ['Operator Utama', state.operatorName || '(Multi-Operator / Lihat Kolom I)', '', 'Shift Aktif', state.shift]
+        ];
+        metaRows.forEach((mr, i) => {
+          const r = ws.getRow(4 + i);
+          r.getCell(1).value = mr[0]; r.getCell(1).font = { bold: true, size: 10 };
+          ws.mergeCells(4 + i, 1, 4 + i, 2);
+          r.getCell(3).value = mr[1]; r.getCell(3).font = { size: 10 };
+          ws.mergeCells(4 + i, 3, 4 + i, 6);
+          r.getCell(7).value = mr[3]; r.getCell(7).font = { bold: true, size: 10 };
+          ws.mergeCells(4 + i, 7, 4 + i, 8);
+          r.getCell(9).value = mr[4]; r.getCell(9).font = { size: 10 };
+          ws.mergeCells(4 + i, 9, 4 + i, 11);
+        });
+
+        // Table Header Row 7
+        const headerRow = ws.getRow(7);
+        const headers = ['No', 'Kode SOP', 'Ref Aktivitas', 'Deskripsi Pekerjaan (53 Item)', 'Frekuensi', 'Status Mesin', 'Durasi (Mnt)', 'Status Aktual', 'Operator & Waktu', 'Bukti Foto', 'Catatan / Temuan'];
+        headers.forEach((h, idx) => {
+          const cell = headerRow.getCell(idx + 1);
+          cell.value = h;
+          cell.font = { name: 'Calibri', size: 10, bold: true, color: { argb: 'FFFFFFFF' } };
+          cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FF1E3A8A' } };
+          cell.alignment = { vertical: 'middle', horizontal: 'center', wrapText: true };
+          cell.border = { top: { style: 'thin' }, left: { style: 'thin' }, bottom: { style: 'thin' }, right: { style: 'thin' } };
+        });
+        headerRow.height = 26;
+
+        // Data Rows (All 53 items)
+        let okCnt = 0, abnCnt = 0, pendCnt = 0, photoCnt = 0, totalMins = 0;
+        TBM_DATA.tasks.forEach((t, idx) => {
+          const rowNum = 8 + idx;
+          const sub = subMap[t.sop];
+          const dr = draft[t.sop];
+          const src = sub || (dr && dr.status !== 'pending' ? { ...dr, operatorName: state.operatorName || 'Draft Lokal', shift: state.shift, submittedAt: 'Draft' } : null);
+          const statusTxt = src ? src.status.toUpperCase() : 'BELUM';
+          const hasPhoto = src && (src.photoDataUrl || src.photoDriveUrl);
+          if (statusTxt === 'OK') okCnt++;
+          else if (statusTxt === 'ABNORMAL') abnCnt++;
+          else pendCnt++;
+          if (hasPhoto) photoCnt++;
+          totalMins += t.duration;
+
+          const r = ws.getRow(rowNum);
+          const vals = [
+            idx + 1, t.sop, t.ref, cleanTitle(t.task), getFreqInfo(t.task).label,
+            t.machineStatus, t.duration, statusTxt,
+            src ? `${src.operatorName} (${src.submittedAt})` : '-',
+            src && src.photoDriveUrl ? { text: 'Lihat Foto', hyperlink: src.photoDriveUrl } : (hasPhoto ? 'ADA (Lokal)' : '-'),
+            src ? (src.note || '-') : '-'
+          ];
+
+          vals.forEach((v, cIdx) => {
+            const cell = r.getCell(cIdx + 1);
+            cell.value = v;
+            cell.font = { name: 'Calibri', size: 9.5 };
+            cell.alignment = { vertical: 'middle', horizontal: [0, 1, 4, 6, 7, 9].includes(cIdx) ? 'center' : 'left', wrapText: true };
+            cell.border = { top: { style: 'thin', color: { argb: 'FFCBD5E1' } }, left: { style: 'thin', color: { argb: 'FFCBD5E1' } }, bottom: { style: 'thin', color: { argb: 'FFCBD5E1' } }, right: { style: 'thin', color: { argb: 'FFCBD5E1' } } };
+            if (idx % 2 === 1) {
+              cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFF8FAFC' } };
+            }
+          });
+
+          // Color code status cell
+          const stCell = r.getCell(8);
+          if (statusTxt === 'OK') {
+            stCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFD1FAE5' } };
+            stCell.font = { name: 'Calibri', size: 9.5, bold: true, color: { argb: 'FF065F46' } };
+          } else if (statusTxt === 'ABNORMAL') {
+            stCell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFE4E6' } };
+            stCell.font = { name: 'Calibri', size: 9.5, bold: true, color: { argb: 'FF9F1239' } };
+          } else {
+            stCell.font = { name: 'Calibri', size: 9.5, color: { argb: 'FF64748B' } };
+          }
+          r.height = 22;
+        });
+
+        // Summary Row
+        const sumRowNum = 8 + TBM_DATA.tasks.length;
+        const sumRow = ws.getRow(sumRowNum);
+        ws.mergeCells(sumRowNum, 1, sumRowNum, 6);
+        sumRow.getCell(1).value = `TOTAL RINGKASAN (${TBM_DATA.tasks.length} ITEM)  —  OK: ${okCnt}  |  ABNORMAL: ${abnCnt}  |  BELUM: ${pendCnt}  |  FOTO: ${photoCnt}`;
+        sumRow.getCell(1).font = { bold: true, size: 10 };
+        sumRow.getCell(7).value = { formula: `SUM(G8:G${sumRowNum - 1})`, result: totalMins };
+        sumRow.getCell(7).font = { bold: true, size: 10 };
+        sumRow.getCell(7).alignment = { horizontal: 'center', vertical: 'middle' };
+        ws.mergeCells(sumRowNum, 8, sumRowNum, 11);
+        const compPct = Math.round(((okCnt + abnCnt) / TBM_DATA.tasks.length) * 100);
+        sumRow.getCell(8).value = `COMPLIANCE AKTUAL: ${compPct}%`;
+        sumRow.getCell(8).font = { bold: true, size: 10, color: { argb: 'FF1E3A8A' } };
+        sumRow.getCell(8).alignment = { horizontal: 'center', vertical: 'middle' };
+        for (let c = 1; c <= 11; c++) {
+          sumRow.getCell(c).fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE2E8F0' } };
+          sumRow.getCell(c).border = { top: { style: 'medium' }, bottom: { style: 'medium' }, left: { style: 'thin' }, right: { style: 'thin' } };
+        }
+        sumRow.height = 24;
+
+        // Signature Block
+        const sigStart = sumRowNum + 3;
+        ws.mergeCells(sigStart, 1, sigStart, 3); ws.getCell(sigStart, 1).value = 'Dilaksanakan Oleh (Operator)';
+        ws.mergeCells(sigStart, 5, sigStart, 7); ws.getCell(sigStart, 5).value = 'Diperiksa Oleh (Leader / SPV MTC)';
+        ws.mergeCells(sigStart, 9, sigStart, 11); ws.getCell(sigStart, 9).value = 'Disetujui Oleh (Manager Engineering)';
+        [1, 5, 9].forEach(c => {
+          ws.getCell(sigStart, c).font = { bold: true, size: 10 };
+          ws.getCell(sigStart, c).alignment = { horizontal: 'center' };
+        });
+        const sigLine = sigStart + 4;
+        ws.mergeCells(sigLine, 1, sigLine, 3); ws.getCell(sigLine, 1).value = `( ${state.operatorName || '...................................'} )`;
+        ws.mergeCells(sigLine, 5, sigLine, 7); ws.getCell(sigLine, 5).value = '( ................................... )';
+        ws.mergeCells(sigLine, 9, sigLine, 11); ws.getCell(sigLine, 9).value = '( ................................... )';
+        [1, 5, 9].forEach(c => { ws.getCell(sigLine, c).alignment = { horizontal: 'center' }; });
+
+        // Download file
+        const buf = await wb.xlsx.writeBuffer();
+        const blob = new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Form_TBM_Sidel_F35E_${wk}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showToast(`Form Excel (.xlsx) ${wk} berhasil diunduh!`);
+      } catch (err) {
+        showToast('Gagal membuat .xlsx, beralih ke CSV...');
+        exportReportsCsv();
+      }
+    }
+
+    function exportReportsCsv() {
+      const wk = getWeekCode();
+      const subMap = getSubmittedMapForWeek(wk);
+      const headers = ['No', 'Kode SOP', 'Ref', 'Task', 'Status Mesin', 'Durasi', 'Status Aktual', 'Operator', 'Waktu', 'Ada Foto', 'Catatan'];
+      const esc = v => '"' + String(v ?? '').replace(/"/g, '""') + '"';
+      const rows = [headers.join(',')];
+      TBM_DATA.tasks.forEach((t, i) => {
+        const s = subMap[t.sop];
+        rows.push([
+          i + 1, t.sop, t.ref, cleanTitle(t.task), t.machineStatus, t.duration,
+          s ? s.status.toUpperCase() : 'BELUM', s ? s.operatorName : '-', s ? s.submittedAt : '-',
+          s && (s.photoDataUrl || s.photoDriveUrl) ? 'YA' : 'TIDAK', s ? s.note : ''
+        ].map(esc).join(','));
+      });
+      const blob = new Blob(['\uFEFF' + rows.join('\n')], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `TBM_F35E_${wk}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast('File CSV berhasil diunduh.');
+    }
+
+    // ==================== SUBMIT, UNLOCK & SYNC ====================
+    function openSubmitModal() {
+      const op = document.getElementById('operator-name').value.trim();
+      if (!op) {
+        switchTab('tasks');
+        document.getElementById('operator-name').focus();
+        showToast('Isi Nama Operator terlebih dahulu.');
+        return;
+      }
+      state.operatorName = op;
+      state.shift = document.getElementById('operator-shift').value;
+      saveProfile();
+
+      const wk = getWeekCode();
+      const subMap = getSubmittedMapForWeek(wk);
+      const draft = getWeekDraft(wk);
+      let ok = 0, abn = 0, photos = 0;
+      TBM_DATA.tasks.forEach(t => {
+        if (subMap[t.sop]) return;
+        const d = draft[t.sop];
+        if (!d) return;
+        if (d.status === 'ok') ok++;
+        if (d.status === 'abnormal') abn++;
+        if (d.photoDataUrl && (d.status === 'ok' || d.status === 'abnormal')) photos++;
+      });
+      if (ok + abn === 0) { showToast('Tandai minimal 1 item OK/Abnormal dulu.'); return; }
+
+      document.getElementById('modal-submit-subtitle').textContent = `SIDEL F35E (24T) • ${wk} • ${state.shift}`;
+      document.getElementById('modal-submit-summary').innerHTML = `
+        <div class="flex justify-between"><span class="text-slate-500">Operator</span><span class="font-bold">${escapeHtml(op)}</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Item Baru</span><span class="font-bold text-blue-700">${ok + abn} item (OK: ${ok}, Abnormal: ${abn})</span></div>
+        <div class="flex justify-between"><span class="text-slate-500">Bukti Foto</span><span class="font-bold text-emerald-700">${photos} foto</span></div>`;
+      document.getElementById('modal-submit-note').textContent = navigator.onLine !== false && state.sheetsUrl
+        ? 'Data akan disimpan offline di HP dan langsung dikirim ke Google Sheets.'
+        : 'Data disimpan aman secara OFFLINE di HP (IndexedDB), dikunci agar tidak terulang, dan siap diekspor ke Form Excel (.xlsx) kapan saja.';
+      document.getElementById('modal-submit').classList.remove('hidden');
+    }
+
+    async function confirmSubmit() {
+      const wk = getWeekCode();
+      const subMap = getSubmittedMapForWeek(wk);
+      const draft = getWeekDraft(wk);
+      let okCount = 0, abnCount = 0, photoCount = 0;
+      const items = [];
+      TBM_DATA.tasks.forEach(t => {
+        if (subMap[t.sop]) return;
+        const d = draft[t.sop];
+        if (!d || (d.status !== 'ok' && d.status !== 'abnormal')) return;
+        if (d.status === 'ok') okCount++;
+        if (d.status === 'abnormal') abnCount++;
+        if (d.photoDataUrl) photoCount++;
+        items.push({
+          sop: t.sop, ref: t.ref, task: t.task, machineStatus: t.machineStatus, duration: t.duration,
+          status: d.status, note: d.note || '', photoDataUrl: d.photoDataUrl || null, photoSizeKb: d.photoSizeKb || 0
+        });
+        delete draft[t.sop];
+      });
+      if (!items.length) return;
+
+      const report = {
+        id: 'RPT-' + Date.now(), machineId: 'F35E-24T', machineName: 'SIDEL ROLLQUATTRO F35E (24T)',
+        weekCode: wk, runningHours: TBM_DATA.hours[state.weekIndex],
+        operatorName: state.operatorName, shift: state.shift,
+        submittedAt: new Date().toLocaleString('id-ID', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+        totalScheduled: items.length, completedCount: okCount + abnCount, okCount, abnormalCount: abnCount, photoCount,
+        synced: false, items
+      };
+
+      state.reports.unshift(report);
+      dbSet('reports', state.reports);
+      dbSet('drafts', state.draftsByWeek);
+      document.getElementById('modal-submit').classList.add('hidden');
+      renderAll();
+
+      if (navigator.onLine !== false && state.sheetsUrl) {
+        const ok = await pushSingleReport(report);
+        showToast(ok ? `${items.length} item tersimpan & terkirim ke Sheets!` : `${items.length} item tersimpan offline (masuk antrean sync).`);
+      } else {
+        showToast(`${items.length} item tersimpan offline & otomatis dikunci!`);
+      }
+    }
+
+    async function pushSingleReport(report) {
+      if (!state.sheetsUrl) return false;
+      try {
+        const res = await fetch(state.sheetsUrl, {
+          method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(report)
+        });
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        report.synced = true;
+        dbSet('reports', state.reports);
+        renderAll();
+        return true;
+      } catch (e) { return false; }
+    }
+
+    async function pushAllQueue() {
+      if (!state.sheetsUrl) { showToast('Isi URL Web App Google Sheets terlebih dahulu.'); return; }
+      const unsynced = state.reports.filter(r => !r.synced);
+      if (!unsynced.length) { showToast('Semua laporan sudah tersinkron!'); return; }
+      showToast(`Mengirim ${unsynced.length} laporan antrean...`);
+      let okCnt = 0;
+      for (const r of unsynced) { if (await pushSingleReport(r)) okCnt++; }
+      showToast(`${okCnt}/${unsynced.length} laporan berhasil dikirim ke Sheets.`);
+    }
+
+    async function pullFromSheets() {
+      if (!state.sheetsUrl) { showToast('Isi URL Web App Google Sheets terlebih dahulu.'); return; }
+      showToast('Menarik data dari Google Sheets...');
+      try {
+        const res = await fetch(state.sheetsUrl);
+        const data = await res.json();
+        if (data && data.ok && Array.isArray(data.reports)) {
+          const localOnly = state.reports.filter(r => !r.synced && !data.reports.some(x => x.id === r.id));
+          state.reports = [...localOnly, ...data.reports];
+          dbSet('reports', state.reports);
+          renderAll();
+          showToast(`Sinkron berhasil: ${data.reports.length} laporan dari Sheets.`);
+        }
+      } catch (e) { showToast('Gagal menarik data. Pastikan HP online & URL benar.'); }
+    }
+
+    function openUnlockModal(sop) {
+      const wk = getWeekCode();
+      const sub = getSubmittedMapForWeek(wk)[sop];
+      if (!sub) return;
+      state.pendingUnlockSop = sop;
+      document.getElementById('modal-unlock-desc').innerHTML =
+        `Data <strong>${escapeHtml(sop)}</strong> (${escapeHtml(wk)}) diisi oleh <strong>${escapeHtml(sub.operatorName)}</strong> pada ${escapeHtml(sub.submittedAt)}. Hapus data ini agar bisa diisi ulang?`;
+      document.getElementById('modal-unlock').classList.remove('hidden');
+    }
+
+    function confirmUnlock() {
+      const sop = state.pendingUnlockSop;
+      if (!sop) return;
+      const wk = getWeekCode();
+      state.reports.forEach(r => {
+        if (r.weekCode !== wk || !Array.isArray(r.items)) return;
+        const idx = r.items.findIndex(x => x.sop === sop);
+        if (idx >= 0) {
+          r.items.splice(idx, 1);
+          r.okCount = r.items.filter(x => x.status === 'ok').length;
+          r.abnormalCount = r.items.filter(x => x.status === 'abnormal').length;
+          r.completedCount = r.okCount + r.abnormalCount;
+          r.totalScheduled = r.items.length;
+          r.photoCount = r.items.filter(x => x.photoDataUrl || x.photoDriveUrl).length;
+        }
+      });
+      state.reports = state.reports.filter(r => r.items && r.items.length > 0);
+      delete getWeekDraft(wk)[sop];
+      dbSet('reports', state.reports);
+      dbSet('drafts', state.draftsByWeek);
+      state.pendingUnlockSop = null;
+      document.getElementById('modal-unlock').classList.add('hidden');
+      renderAll();
+      showToast(`${sop} dibuka kembali untuk diisi ulang.`);
+    }
+
+    // ==================== QR RENDER ====================
+    function renderQrTab() {
+      const url = document.getElementById('qr-base-url').value.trim() || 'https://sites.google.com/view/mtc-plan-label-l3/full-page-embed';
+      document.getElementById('qr-full-url').textContent = url;
+      const box = document.getElementById('qr-code-box');
+      if (typeof qrcode !== 'undefined') {
+        try {
+          const qr = qrcode(0, 'L');
+          qr.addData(url);
+          qr.make();
+          const count = qr.getModuleCount(), quiet = 4, total = count + quiet * 2, size = 230, cell = size / total;
+          let rects = `<rect width="${size}" height="${size}" fill="#ffffff"/>`;
+          for (let r = 0; r < count; r++) {
+            for (let c = 0; c < count; c++) {
+              if (qr.isDark(r, c)) rects += `<rect x="${((c + quiet) * cell).toFixed(2)}" y="${((r + quiet) * cell).toFixed(2)}" width="${(cell + 0.3).toFixed(2)}" height="${(cell + 0.3).toFixed(2)}" fill="#000000"/>`;
+            }
+          }
+          box.innerHTML = `<svg id="qr-svg-el" xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 ${size} ${size}" style="display:block;max-width:100%;height:auto;">${rects}</svg>`;
+        } catch (e) {}
+      }
+    }
+
+    function switchTab(tab) {
+      state.activeTab = tab;
+      ['tasks', 'focus', 'reports', 'sync'].forEach(t => {
+        document.getElementById(`view-${t}`).classList.toggle('hidden', t !== tab);
+        const nav = document.getElementById(`nav-${t}`);
+        if (t === tab) {
+          nav.classList.add('text-blue-700', 'font-bold');
+          nav.classList.remove('text-slate-500', 'font-medium');
+        } else {
+          nav.classList.remove('text-blue-700', 'font-bold');
+          nav.classList.add('text-slate-500', 'font-medium');
+        }
+      });
+      renderAll();
+    }
+
+    function renderAll() {
+      renderTasksTab();
+      if (state.activeTab === 'focus') renderFocusTab();
+      if (state.activeTab === 'reports') renderReportsTab();
+      if (state.activeTab === 'sync') renderQrTab();
+      updateNetworkUI();
+    }
+
+    function fallbackCopy(txt) {
+      const ta = document.createElement('textarea');
+      ta.value = txt; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); showToast('Link disalin!'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    // ==================== BOOTSTRAP ====================
+    async function init() {
+      await initIndexedDB();
+      updateNetworkUI();
+
+      const weekSel = document.getElementById('week-select');
+      TBM_DATA.weeks.forEach((w, idx) => {
+        const o = document.createElement('option');
+        o.value = idx; o.textContent = `${w} (${TBM_DATA.hours[idx]}j)`;
+        weekSel.appendChild(o);
+      });
+
+      const prof = await dbGet('profile', null);
+      if (prof) {
+        state.operatorName = prof.operatorName || '';
+        state.shift = prof.shift || 'Shift 1 (Pagi)';
+        if (typeof prof.weekIndex === 'number') state.weekIndex = prof.weekIndex;
+        if (prof.scopeMode) state.scopeMode = prof.scopeMode;
+        state.hideSubmitted = Boolean(prof.hideSubmitted);
+      }
+      state.draftsByWeek = await dbGet('drafts', {});
+      state.reports = await dbGet('reports', []);
+      state.sheetsUrl = await dbGet('sheetsUrl', '');
+
+      weekSel.value = state.weekIndex;
+      document.getElementById('operator-name').value = state.operatorName;
+      document.getElementById('operator-shift').value = state.shift;
+      document.getElementById('toggle-hide-submitted').checked = state.hideSubmitted;
+      document.getElementById('sheets-webapp-url').value = state.sheetsUrl;
+
+      // Listeners
+      window.addEventListener('online', updateNetworkUI);
+      window.addEventListener('offline', updateNetworkUI);
+
+      document.querySelectorAll('.bottom-tab').forEach(b => b.addEventListener('click', () => switchTab(b.dataset.tab)));
+      weekSel.addEventListener('change', (e) => { state.weekIndex = Number(e.target.value); saveProfile(); renderAll(); });
+      document.getElementById('operator-name').addEventListener('input', (e) => { state.operatorName = e.target.value; saveProfile(); });
+      document.getElementById('operator-shift').addEventListener('change', (e) => { state.shift = e.target.value; saveProfile(); });
+      document.getElementById('scope-toggle').addEventListener('click', (e) => {
+        const b = e.target.closest('button[data-scope]'); if (!b) return;
+        state.scopeMode = b.dataset.scope; saveProfile(); renderAll();
+      });
+      document.getElementById('toggle-hide-submitted').addEventListener('change', (e) => { state.hideSubmitted = e.target.checked; saveProfile(); renderTasksTab(); });
+      document.getElementById('task-search').addEventListener('input', (e) => { state.searchQuery = e.target.value; renderTasksTab(); });
+      document.getElementById('filter-pills').addEventListener('click', (e) => {
+        const b = e.target.closest('.filter-pill'); if (!b) return;
+        state.filter = b.dataset.filter;
+        document.querySelectorAll('.filter-pill').forEach(p => {
+          p.className = p === b ? 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-900 text-white' : 'filter-pill shrink-0 px-3 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-700';
+        });
+        renderTasksTab();
+      });
+      document.getElementById('btn-jump-next').addEventListener('click', () => {
+        const el = document.querySelector('#task-list article[data-pending="true"]');
+        if (!el) { showToast('Semua item di tampilan ini sudah terisi!'); return; }
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.remove('jump-highlight'); void el.offsetWidth; el.classList.add('jump-highlight');
+      });
+
+      // Task list delegated actions
+      const taskList = document.getElementById('task-list');
+      taskList.addEventListener('click', (e) => {
+        const el = e.target.closest('[data-action]'); if (!el) return;
+        const act = el.dataset.action, sop = el.dataset.sop, wk = getWeekCode();
+        if (act === 'unlock') { openUnlockModal(sop); return; }
+        if (act === 'zoom-submitted') {
+          const s = getSubmittedMapForWeek(wk)[sop];
+          if (s && s.photoDataUrl) {
+            document.getElementById('lightbox-img').src = s.photoDataUrl;
+            document.getElementById('lightbox-caption').textContent = `${sop} • ${s.operatorName}`;
+            document.getElementById('modal-lightbox').classList.remove('hidden');
+          }
+          return;
+        }
+        const d = getItemDraft(wk, sop);
+        if (act === 'set-ok') { d.status = d.status === 'ok' ? 'pending' : 'ok'; dbSet('drafts', state.draftsByWeek); renderTasksTab(); }
+        else if (act === 'set-abnormal') { d.status = d.status === 'abnormal' ? 'pending' : 'abnormal'; if (d.status === 'abnormal') d.showNote = true; dbSet('drafts', state.draftsByWeek); renderTasksTab(); }
+        else if (act === 'toggle-note') { d.showNote = !d.showNote; renderTasksTab(); }
+        else if (act === 'remove-photo') { d.photoDataUrl = null; d.photoSizeKb = 0; dbSet('drafts', state.draftsByWeek); renderTasksTab(); }
+        else if (act === 'zoom-draft' && d.photoDataUrl) {
+          document.getElementById('lightbox-img').src = d.photoDataUrl;
+          document.getElementById('lightbox-caption').textContent = `${sop} • Draft (${d.photoSizeKb} KB)`;
+          document.getElementById('modal-lightbox').classList.remove('hidden');
+        }
+      });
+      taskList.addEventListener('input', (e) => {
+        const el = e.target.closest('[data-action="edit-note"]'); if (!el) return;
+        getItemDraft(getWeekCode(), el.dataset.sop).note = el.value;
+        dbSet('drafts', state.draftsByWeek);
+      });
+      taskList.addEventListener('change', async (e) => {
+        const inp = e.target.closest('input[data-action="upload-photo"]'); if (!inp || !inp.files || !inp.files[0]) return;
+        try {
+          showToast('Mengompres foto offline...');
+          const { dataUrl, sizeKb } = await compressImage(inp.files[0], 800, 0.65);
+          const d = getItemDraft(getWeekCode(), inp.dataset.sop);
+          d.photoDataUrl = dataUrl; d.photoSizeKb = sizeKb;
+          if (d.status === 'pending') d.status = 'ok';
+          dbSet('drafts', state.draftsByWeek);
+          renderTasksTab();
+          showToast(`Foto tersimpan offline (${sizeKb} KB).`);
+        } catch (err) { showToast('Gagal memproses foto.'); }
+      });
+
+      // Focus mode actions
+      document.getElementById('btn-focus-prev').addEventListener('click', () => { state.focusIndex--; renderFocusTab(); });
+      document.getElementById('btn-focus-next').addEventListener('click', () => { state.focusIndex++; renderFocusTab(); });
+      document.getElementById('btn-focus-jump-pending').addEventListener('click', () => {
+        const tasks = getActiveTasks(state.weekIndex);
+        const subMap = getSubmittedMapForWeek(getWeekCode());
+        const draft = getWeekDraft(getWeekCode());
+        const idx = tasks.findIndex(t => !subMap[t.sop] && (!draft[t.sop] || draft[t.sop].status === 'pending'));
+        if (idx >= 0) { state.focusIndex = idx; renderFocusTab(); showToast(`Melompat ke item #${idx + 1}`); }
+        else showToast('Semua item sudah diisi!');
+      });
+      const focusBox = document.getElementById('focus-card-container');
+      focusBox.addEventListener('click', (e) => {
+        const el = e.target.closest('[data-focus-action]'); if (!el) return;
+        const act = el.dataset.focusAction, sop = el.dataset.sop, wk = getWeekCode();
+        if (act === 'unlock') { openUnlockModal(sop); return; }
+        if (act === 'open-submit') { openSubmitModal(); return; }
+        const d = getItemDraft(wk, sop);
+        if (act === 'set-ok') { d.status = d.status === 'ok' ? 'pending' : 'ok'; dbSet('drafts', state.draftsByWeek); renderFocusTab(); }
+        else if (act === 'set-abnormal') { d.status = d.status === 'abnormal' ? 'pending' : 'abnormal'; dbSet('drafts', state.draftsByWeek); renderFocusTab(); }
+        else if (act === 'remove-photo') { d.photoDataUrl = null; d.photoSizeKb = 0; dbSet('drafts', state.draftsByWeek); renderFocusTab(); }
+      });
+      focusBox.addEventListener('input', (e) => {
+        const el = e.target.closest('[data-focus-action="edit-note"]'); if (!el) return;
+        getItemDraft(getWeekCode(), el.dataset.sop).note = el.value;
+        dbSet('drafts', state.draftsByWeek);
+      });
+      focusBox.addEventListener('change', async (e) => {
+        const inp = e.target.closest('input[data-focus-action="upload-photo"]'); if (!inp || !inp.files || !inp.files[0]) return;
+        try {
+          const { dataUrl, sizeKb } = await compressImage(inp.files[0], 800, 0.65);
+          const d = getItemDraft(getWeekCode(), inp.dataset.sop);
+          d.photoDataUrl = dataUrl; d.photoSizeKb = sizeKb;
+          if (d.status === 'pending') d.status = 'ok';
+          dbSet('drafts', state.draftsByWeek);
+          renderFocusTab();
+          showToast(`Foto tersimpan (${sizeKb} KB).`);
+        } catch (err) {}
+      });
+
+      // Modals & Exports
+      document.getElementById('btn-open-submit').addEventListener('click', openSubmitModal);
+      document.getElementById('btn-close-submit').addEventListener('click', () => document.getElementById('modal-submit').classList.add('hidden'));
+      document.getElementById('btn-cancel-submit').addEventListener('click', () => document.getElementById('modal-submit').classList.add('hidden'));
+      document.getElementById('btn-confirm-submit').addEventListener('click', confirmSubmit);
+
+      document.getElementById('btn-cancel-unlock').addEventListener('click', () => document.getElementById('modal-unlock').classList.add('hidden'));
+      document.getElementById('btn-confirm-unlock').addEventListener('click', confirmUnlock);
+
+      document.getElementById('btn-export-xlsx-top').addEventListener('click', exportFormattedExcel);
+      document.getElementById('btn-export-xlsx-main').addEventListener('click', exportFormattedExcel);
+      document.getElementById('btn-export-csv').addEventListener('click', exportReportsCsv);
+      document.getElementById('btn-load-demo').addEventListener('click', () => {
+        const wk = getWeekCode();
+        const items = TBM_DATA.tasks.slice(0, 6).map((t, i) => ({
+          sop: t.sop, ref: t.ref, task: t.task, machineStatus: t.machineStatus, duration: t.duration,
+          status: i === 1 ? 'abnormal' : 'ok', note: i === 1 ? 'Filter udara berembun, perlu ganti.' : '',
+          photoDataUrl: null, photoSizeKb: 0
+        }));
+        state.reports.unshift({
+          id: 'DEMO-' + Date.now(), machineId: 'F35E-24T', machineName: 'SIDEL ROLLQUATTRO F35E (24T)',
+          weekCode: wk, runningHours: TBM_DATA.hours[state.weekIndex], operatorName: 'Contoh Operator', shift: 'Shift 1 (Pagi)',
+          submittedAt: '24 Nov 2026, 09:00', totalScheduled: 6, completedCount: 6, okCount: 5, abnormalCount: 1, photoCount: 0, synced: false, items
+        });
+        dbSet('reports', state.reports);
+        renderAll();
+        showToast('6 contoh item dimuat! Coba klik Unduh Form Excel (.xlsx).');
+      });
+
+      document.getElementById('btn-clear-reports').addEventListener('click', () => document.getElementById('modal-reset').classList.remove('hidden'));
+      document.getElementById('btn-cancel-reset').addEventListener('click', () => document.getElementById('modal-reset').classList.add('hidden'));
+      document.getElementById('btn-confirm-reset').addEventListener('click', () => {
+        state.reports = []; state.draftsByWeek = {};
+        dbSet('reports', []); dbSet('drafts', {});
+        document.getElementById('modal-reset').classList.add('hidden');
+        renderAll(); showToast('Data lokal dibersihkan.');
+      });
+
+      document.getElementById('report-history-list').addEventListener('click', (e) => {
+        const b = e.target.closest('[data-action="open-detail"]'); if (!b) return;
+        const r = state.reports.find(x => x.id === b.dataset.reportId); if (!r) return;
+        document.getElementById('detail-title').textContent = `${r.weekCode} — ${r.operatorName}`;
+        document.getElementById('detail-meta').textContent = `${r.shift} • ${r.submittedAt} • ${r.completedCount} item`;
+        document.getElementById('detail-body').innerHTML = r.items.map(it => `
+          <div class="p-2.5 rounded-xl border border-slate-200 flex items-center justify-between gap-2 text-xs">
+            <div class="min-w-0">
+              <div class="font-bold"><span class="font-mono">${escapeHtml(it.sop)}</span> • <span class="${it.status === 'ok' ? 'text-emerald-700' : 'text-rose-700'}">${it.status.toUpperCase()}</span></div>
+              <div class="text-slate-600 truncate">${escapeHtml(cleanTitle(it.task))}</div>
+              ${it.note ? `<div class="text-rose-700 mt-0.5">${escapeHtml(it.note)}</div>` : ''}
+            </div>
+            ${it.photoDataUrl ? `<img src="${it.photoDataUrl}" class="w-12 h-12 rounded-lg object-cover border shrink-0" />` : ''}
+          </div>`).join('');
+        document.getElementById('modal-detail').classList.remove('hidden');
+      });
+      document.getElementById('btn-close-detail').addEventListener('click', () => document.getElementById('modal-detail').classList.add('hidden'));
+      document.getElementById('btn-close-lightbox').addEventListener('click', () => document.getElementById('modal-lightbox').classList.add('hidden'));
+
+      // Sync & QR listeners
+      document.getElementById('btn-save-sheets-url').addEventListener('click', () => {
+        state.sheetsUrl = document.getElementById('sheets-webapp-url').value.trim();
+        dbSet('sheetsUrl', state.sheetsUrl);
+        showToast(state.sheetsUrl ? 'URL Sheets disimpan!' : 'URL Sheets dikosongkan.');
+      });
+      document.getElementById('btn-push-queue').addEventListener('click', pushAllQueue);
+      document.getElementById('btn-pull-sheets').addEventListener('click', pullFromSheets);
+      document.getElementById('qr-base-url').addEventListener('input', renderQrTab);
+      document.getElementById('btn-print-qr').addEventListener('click', () => window.print());
+      document.getElementById('btn-copy-qr-url').addEventListener('click', () => {
+        const u = document.getElementById('qr-full-url').textContent;
+        if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(u).then(() => showToast('Link disalin!')).catch(() => fallbackCopy(u));
+        else fallbackCopy(u);
+      });
+      document.getElementById('btn-download-qr-png').addEventListener('click', () => {
+        const svgEl = document.getElementById('qr-svg-el'); if (!svgEl) return;
+        const img = new Image();
+        img.onload = () => {
+          const c = document.createElement('canvas'); c.width = 600; c.height = 600;
+          const ctx = c.getContext('2d'); ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, 600, 600); ctx.drawImage(img, 0, 0, 600, 600);
+          const a = document.createElement('a'); a.download = 'QR_TBM_PWA_F35E.png'; a.href = c.toDataURL('image/png');
+          document.body.appendChild(a); a.click(); document.body.removeChild(a);
+          showToast('QR PNG (600x600) diunduh!');
+        };
+        img.src = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(new XMLSerializer().serializeToString(svgEl))));
+      });
+
+      renderAll();
+    }
+
+    window.addEventListener('DOMContentLoaded', init);
+    
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(() => {});
+      });
+    }
+  </script>
+</body>
+</html>
